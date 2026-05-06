@@ -1,0 +1,2131 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitLife Tracker ✨</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #13131c;
+  --surface2: #1a1a28;
+  --surface3: #21213a;
+  --border: rgba(255,255,255,0.08);
+  --accent1: #ff6bff;
+  --accent2: #6bffff;
+  --accent3: #ffdb6b;
+  --accent4: #6bff9e;
+  --accent5: #ff8c6b;
+  --text: #f0f0ff;
+  --text2: #a0a0c0;
+  --danger: #ff4d6b;
+  --safe: #6bff9e;
+  --warn: #ffdb6b;
+  --glow1: rgba(255,107,255,0.3);
+  --glow2: rgba(107,255,255,0.3);
+  --glow3: rgba(255,219,107,0.3);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body {
+  font-family:'Nunito',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+
+/* Animated starfield background */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 25% 40%, rgba(255,107,255,0.8) 0%, transparent 100%),
+    radial-gradient(2px 2px at 40% 8%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 55%, rgba(107,255,255,0.8) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 20%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(2px 2px at 85% 70%, rgba(255,219,107,0.8) 0%, transparent 100%),
+    radial-gradient(1px 1px at 92% 35%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 15% 80%, rgba(107,255,158,0.8) 0%, transparent 100%),
+    radial-gradient(1px 1px at 60% 88%, rgba(255,107,255,0.6) 0%, transparent 100%),
+    radial-gradient(2px 2px at 33% 65%, rgba(255,255,255,0.4) 0%, transparent 100%);
+  pointer-events:none;
+  z-index:0;
+  animation:twinkle 4s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  0%{opacity:0.4;} 100%{opacity:1;}
+}
+
+/* Floating emoji particles */
+body::after {
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Ctext x='10' y='50' font-size='20' opacity='.15'%3E⭐%3C/text%3E%3Ctext x='120' y='90' font-size='18' opacity='.12'%3E🏆%3C/text%3E%3Ctext x='50' y='160' font-size='22' opacity='.13'%3E🌟%3C/text%3E%3Ctext x='160' y='30' font-size='16' opacity='.1'%3E💪%3C/text%3E%3Ctext x='90' y='180' font-size='20' opacity='.11'%3E🎯%3C/text%3E%3C/svg%3E");
+  animation:floatUp 20s linear infinite;
+  z-index:0;
+}
+
+@keyframes floatUp {
+  from{background-position:0 0;}
+  to{background-position:200px -200px;}
+}
+
+.container {
+  position:relative;
+  z-index:1;
+  max-width:960px;
+  margin:0 auto;
+  padding:24px 20px 60px;
+}
+
+/* ─── SCREENS ─── */
+.screen{display:none;}
+.screen.active{display:block;animation:fadeUp 0.4s ease;}
+
+@keyframes fadeUp {
+  from{opacity:0;transform:translateY(24px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* ─── HEADER TITLE ─── */
+.app-title {
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(2rem,6vw,3.2rem);
+  text-align:center;
+  background:linear-gradient(135deg,var(--accent1),var(--accent2),var(--accent3));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:6px;
+  filter:drop-shadow(0 0 20px var(--glow1));
+}
+
+.app-subtitle {
+  text-align:center;
+  color:var(--text2);
+  font-size:0.95em;
+  margin-bottom:28px;
+  font-weight:600;
+}
+
+/* ─── CARDS / SURFACES ─── */
+.card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:22px;
+  margin-bottom:16px;
+}
+
+.card-glow {
+  box-shadow:0 0 30px rgba(255,107,255,0.08);
+}
+
+/* ─── INPUT ─── */
+.input-group{margin-bottom:18px;}
+.input-group label{
+  display:block;
+  font-weight:700;
+  margin-bottom:6px;
+  font-size:0.9em;
+  color:var(--text2);
+  text-transform:uppercase;
+  letter-spacing:0.05em;
+}
+
+input[type="text"],input[type="number"],select {
+  width:100%;
+  padding:13px 16px;
+  background:var(--surface2);
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  color:var(--text);
+  font-family:'Nunito',sans-serif;
+  font-size:1em;
+  font-weight:600;
+  transition:border-color 0.2s,box-shadow 0.2s;
+  appearance:none;
+}
+
+input:focus,select:focus {
+  outline:none;
+  border-color:var(--accent1);
+  box-shadow:0 0 0 3px rgba(255,107,255,0.15);
+}
+
+/* ─── BUTTONS ─── */
+.btn {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:14px 24px;
+  border:none;
+  border-radius:14px;
+  font-family:'Nunito',sans-serif;
+  font-weight:800;
+  font-size:1em;
+  cursor:pointer;
+  transition:transform 0.15s,box-shadow 0.15s;
+  width:100%;
+}
+
+.btn:hover{transform:translateY(-2px);}
+.btn:active{transform:translateY(0);}
+
+.btn-primary {
+  background:linear-gradient(135deg,var(--accent1),#b06bff);
+  color:#fff;
+  box-shadow:0 4px 20px var(--glow1);
+}
+
+.btn-secondary {
+  background:var(--surface2);
+  color:var(--text);
+  border:1.5px solid var(--border);
+}
+
+.btn-success {
+  background:linear-gradient(135deg,var(--accent4),#00c97f);
+  color:#0a0a0f;
+  box-shadow:0 4px 16px rgba(107,255,158,0.25);
+}
+
+.btn-danger {
+  background:linear-gradient(135deg,var(--danger),#ff8c6b);
+  color:#fff;
+}
+
+.btn-group{display:flex;gap:10px;margin-top:20px;}
+.btn-group .btn{margin-top:0;}
+
+/* ─── OPTION CARDS ─── */
+.options-grid{display:grid;grid-template-columns:1fr;gap:10px;margin:12px 0;}
+
+.option-card {
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:14px 18px;
+  background:var(--surface2);
+  border:2px solid var(--border);
+  border-radius:16px;
+  cursor:pointer;
+  transition:all 0.2s;
+  font-weight:700;
+}
+
+.option-card:hover{border-color:var(--accent1);background:var(--surface3);}
+.option-card.selected{border-color:var(--accent1);background:rgba(255,107,255,0.1);box-shadow:0 0 0 1px var(--accent1) inset;}
+.option-icon{font-size:1.8em;flex-shrink:0;}
+.option-info h3{font-size:1em;color:var(--text);margin-bottom:2px;}
+.option-info p{font-size:0.82em;color:var(--text2);font-weight:600;}
+
+/* ─── CHIPS ─── */
+.chips-wrap{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;}
+
+.chip {
+  padding:7px 14px;
+  background:var(--surface2);
+  border:1.5px solid var(--border);
+  border-radius:999px;
+  cursor:pointer;
+  font-size:0.88em;
+  font-weight:700;
+  color:var(--text2);
+  transition:all 0.2s;
+}
+
+.chip:hover{border-color:var(--accent1);color:var(--text);}
+.chip.selected{background:rgba(255,107,255,0.15);border-color:var(--accent1);color:var(--accent1);}
+.chip.allergy-chip.selected{background:rgba(255,77,107,0.15);border-color:var(--danger);color:var(--danger);}
+.chip.health-chip.selected{background:rgba(255,219,107,0.15);border-color:var(--warn);color:var(--warn);}
+
+.custom-input-row{display:flex;gap:8px;margin-top:8px;}
+.custom-input-row input{flex:1;margin:0;}
+.custom-input-row .btn{width:auto;padding:13px 18px;font-size:0.9em;}
+
+/* ─── SECTION HEADER ─── */
+.section-header {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:24px 0 14px;
+}
+
+.section-header h2 {
+  font-family:'Fredoka One',cursive;
+  font-size:1.35em;
+  color:var(--text);
+}
+
+.section-badge {
+  background:linear-gradient(135deg,var(--accent1),#b06bff);
+  color:#fff;
+  font-size:0.75em;
+  font-weight:800;
+  padding:3px 10px;
+  border-radius:999px;
+}
+
+
+
+/* ─── DASHBOARD ─── */
+.dash-header {
+  background:linear-gradient(135deg,#1a0a2e,#0a1a2e,#0a2a1a);
+  border:1px solid rgba(255,107,255,0.2);
+  border-radius:24px 24px 0 0;
+  padding:24px;
+  margin-bottom:0;
+  display:flex;
+  align-items:center;
+  gap:16px;
+  position:relative;
+  overflow:hidden;
+}
+
+.dash-header::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(255,107,255,0.15) 0%, transparent 60%),
+    radial-gradient(circle at 80% 30%, rgba(107,255,255,0.12) 0%, transparent 60%);
+  pointer-events:none;
+}
+
+.avatar {
+  width:72px;height:72px;
+  background:linear-gradient(135deg,var(--accent1),var(--accent2));
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:2em;
+  flex-shrink:0;
+  box-shadow:0 0 20px var(--glow1);
+}
+
+.dash-name{font-family:'Fredoka One',cursive;font-size:1.6em;}
+.dash-goal{font-size:0.88em;color:var(--text2);font-weight:600;margin-top:2px;}
+
+/* Age badge */
+.age-badge {
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:rgba(255,219,107,0.15);
+  border:1px solid var(--warn);
+  color:var(--warn);
+  font-size:0.8em;
+  font-weight:800;
+  padding:4px 10px;
+  border-radius:999px;
+  margin-top:6px;
+}
+
+/* Allergy warning banner */
+.allergy-banner {
+  background:rgba(255,77,107,0.1);
+  border:1.5px solid var(--danger);
+  border-radius:14px;
+  padding:12px 16px;
+  margin:12px 0;
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  font-size:0.88em;
+  font-weight:700;
+}
+
+.allergy-banner .icon{font-size:1.4em;flex-shrink:0;}
+.allergy-banner .text{color:var(--text);}
+.allergy-banner .text span{color:var(--danger);}
+
+.health-banner {
+  background:rgba(255,219,107,0.08);
+  border:1.5px solid var(--warn);
+  border-radius:14px;
+  padding:12px 16px;
+  margin:12px 0;
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  font-size:0.88em;
+  font-weight:700;
+}
+
+.health-banner .text span{color:var(--warn);}
+
+/* ─── TABS ─── */
+.nav-tabs {
+  display:flex;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+
+.nav-tabs::-webkit-scrollbar{display:none;}
+
+.nav-tab {
+  padding:14px 16px;
+  cursor:pointer;
+  font-weight:800;
+  font-size:0.88em;
+  color:var(--text2);
+  white-space:nowrap;
+  border-bottom:3px solid transparent;
+  transition:all 0.2s;
+  flex-shrink:0;
+}
+
+.nav-tab:hover{color:var(--text);}
+.nav-tab.active{color:var(--accent1);border-bottom-color:var(--accent1);}
+
+.tab-content{display:none;padding:20px 0;}
+.tab-content.active{display:block;animation:fadeUp 0.3s ease;}
+
+/* ─── PLAN CARDS ─── */
+.plan-grid{display:grid;grid-template-columns:1fr;gap:16px;}
+
+@media(min-width:600px){.plan-grid{grid-template-columns:repeat(2,1fr);}}
+
+.plan-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:18px;
+  overflow:hidden;
+  transition:transform 0.2s,box-shadow 0.2s;
+}
+
+.plan-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,0.4);}
+
+.plan-card-img {
+  width:100%;height:140px;
+  object-fit:cover;
+  display:block;
+}
+
+.plan-card-body{padding:14px;}
+.plan-card-body h3{font-weight:800;font-size:1em;margin-bottom:6px;}
+.plan-card-body p{font-size:0.83em;color:var(--text2);line-height:1.5;}
+
+/* Allergy flag on cards */
+.allergy-flag {
+  display:inline-flex;align-items:center;gap:4px;
+  background:rgba(255,77,107,0.15);
+  border:1px solid var(--danger);
+  color:var(--danger);
+  font-size:0.75em;font-weight:800;
+  padding:3px 8px;border-radius:999px;
+  margin-top:6px;
+}
+
+.health-flag {
+  display:inline-flex;align-items:center;gap:4px;
+  background:rgba(255,219,107,0.12);
+  border:1px solid var(--warn);
+  color:var(--warn);
+  font-size:0.75em;font-weight:800;
+  padding:3px 8px;border-radius:999px;
+  margin-top:6px;margin-left:4px;
+}
+
+.safe-flag {
+  display:inline-flex;align-items:center;gap:4px;
+  background:rgba(107,255,158,0.12);
+  border:1px solid var(--safe);
+  color:var(--safe);
+  font-size:0.75em;font-weight:800;
+  padding:3px 8px;border-radius:999px;
+  margin-top:6px;margin-left:4px;
+}
+
+.plan-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+
+.mini-pill {
+  background:var(--surface2);
+  color:var(--text2);
+  border:1px solid var(--border);
+  border-radius:999px;
+  padding:4px 10px;
+  font-size:0.78em;
+  font-weight:700;
+}
+
+/* Details toggle */
+.details-toggle {
+  width:100%;margin-top:10px;padding:10px;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  color:var(--text2);
+  font-family:'Nunito',sans-serif;
+  font-weight:700;
+  font-size:0.83em;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:all 0.2s;
+}
+
+.details-toggle:hover{border-color:var(--accent1);color:var(--accent1);}
+.details-toggle .arrow{transition:transform 0.2s;}
+.details-toggle.open .arrow{transform:rotate(90deg);}
+
+.instruction-box {
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px;
+  margin-top:8px;
+  font-size:0.83em;
+}
+
+.instruction-box h4{color:var(--accent2);font-size:0.88em;margin:8px 0 4px;}
+.instruction-box ul, .instruction-box ol{margin-left:16px;color:var(--text2);line-height:1.6;}
+.instruction-box.collapsed{display:none;}
+
+.complete-btn {
+  margin-top:10px;
+  padding:10px 16px;
+  border-radius:999px;
+  font-size:0.85em;
+  font-weight:800;
+  background:linear-gradient(135deg,var(--accent4),#00c97f);
+  color:#0a0a0f;
+  border:none;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+
+.complete-btn:hover{transform:scale(1.03);}
+.complete-btn.done{background:linear-gradient(135deg,var(--accent1),#b06bff);color:#fff;}
+
+/* ─── BADGES ─── */
+.badges-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:16px;}
+
+@media(min-width:500px){.badges-grid{grid-template-columns:repeat(3,1fr);}}
+
+.badge-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:18px 14px;
+  text-align:center;
+  transition:all 0.3s;
+}
+
+.badge-card.unlocked {
+  border-color:var(--accent3);
+  background:rgba(255,219,107,0.06);
+  box-shadow:0 0 20px rgba(255,219,107,0.1);
+}
+
+.badge-icon {
+  font-size:2.8em;
+  margin-bottom:8px;
+  display:block;
+  filter:grayscale(1);
+  opacity:0.4;
+}
+
+.badge-card.unlocked .badge-icon{filter:none;opacity:1;animation:bounceIn 0.5s ease;}
+@keyframes bounceIn{0%{transform:scale(0);}60%{transform:scale(1.2);}100%{transform:scale(1);}}
+
+.badge-card h3{font-size:0.9em;font-weight:800;margin-bottom:4px;}
+.badge-card p{font-size:0.76em;color:var(--text2);line-height:1.4;}
+
+.badge-card.unlocked h3{color:var(--accent3);}
+
+/* ─── CHALLENGES ─── */
+.challenge-card {
+  background:linear-gradient(135deg,var(--surface2),var(--surface3));
+  border:1.5px solid var(--border);
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:12px;
+  display:flex;
+  align-items:center;
+  gap:16px;
+  transition:all 0.2s;
+}
+
+.challenge-card.active-challenge{
+  border-color:var(--accent3);
+  box-shadow:0 0 20px rgba(255,219,107,0.1);
+}
+
+.challenge-card.completed-challenge{
+  border-color:var(--safe);
+  opacity:0.7;
+}
+
+.challenge-icon-wrap {
+  width:56px;height:56px;
+  background:var(--surface);
+  border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.8em;
+  flex-shrink:0;
+}
+
+.challenge-info h3{font-weight:800;font-size:0.95em;margin-bottom:3px;}
+.challenge-info p{font-size:0.82em;color:var(--text2);}
+.challenge-info .reward{color:var(--accent3);font-size:0.82em;font-weight:800;margin-top:4px;}
+
+.challenge-progress{margin-top:8px;}
+.challenge-bar {
+  height:8px;
+  background:var(--surface);
+  border-radius:999px;
+  overflow:hidden;
+}
+
+.challenge-fill {
+  height:100%;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--accent3),var(--accent5));
+  transition:width 0.5s ease;
+}
+
+/* ─── STATS ─── */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0;}
+
+.stat-box {
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:16px 12px;
+  text-align:center;
+}
+
+.stat-box .stat-val{
+  font-family:'Fredoka One',cursive;
+  font-size:1.6em;
+  color:var(--accent1);
+}
+
+.stat-box .stat-label{font-size:0.75em;color:var(--text2);font-weight:700;margin-top:2px;}
+
+/* ─── PROGRESS ─── */
+.progress-bar {
+  height:14px;
+  background:var(--surface2);
+  border-radius:999px;
+  overflow:hidden;
+  margin:10px 0;
+}
+
+.progress-fill {
+  height:100%;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--accent1),var(--accent2));
+  transition:width 1s ease;
+}
+
+/* ─── OVERVIEW HERO ─── */
+.hero-grid{display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:18px;}
+@media(min-width:580px){.hero-grid{grid-template-columns:1fr 1fr;}}
+
+.hero-card {
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:18px;
+  overflow:hidden;
+}
+
+.hero-card img{width:100%;height:160px;object-fit:cover;display:block;}
+.hero-card-body{padding:14px;}
+.hero-card-body h3{font-weight:800;margin-bottom:6px;}
+.hero-card-body p{font-size:0.85em;color:var(--text2);line-height:1.5;}
+
+/* ─── ALLERGY ALERT in food tab ─── */
+.filtered-notice {
+  background:rgba(107,255,158,0.08);
+  border:1.5px solid var(--safe);
+  border-radius:14px;
+  padding:12px 16px;
+  font-size:0.88em;
+  font-weight:700;
+  color:var(--safe);
+  margin-bottom:14px;
+  display:flex;gap:8px;align-items:center;
+}
+
+/* ─── AGE-MODE TOGGLE ─── */
+.mode-toggle {
+  display:flex;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:4px;
+  gap:4px;
+  margin-bottom:20px;
+}
+
+.mode-btn {
+  flex:1;padding:10px;
+  border:none;border-radius:8px;
+  font-family:'Nunito',sans-serif;
+  font-weight:800;font-size:0.9em;
+  cursor:pointer;
+  transition:all 0.2s;
+  background:transparent;
+  color:var(--text2);
+}
+
+.mode-btn.active{background:linear-gradient(135deg,var(--accent1),#b06bff);color:#fff;}
+
+/* ─── LOGOUT ─── */
+.logout-btn{
+  background:linear-gradient(135deg,var(--danger),var(--accent5));
+  color:#fff;
+  width:auto;
+  padding:9px 18px;
+  margin-left:auto;
+  font-size:0.88em;
+}
+
+
+
+/* ─── STAR POINTS DISPLAY ─── */
+.xp-bar-wrap{
+  display:flex;align-items:center;gap:10px;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:10px 14px;
+  margin:12px 0;
+}
+
+.xp-label{font-size:0.82em;font-weight:800;color:var(--accent3);flex-shrink:0;}
+.xp-bar{flex:1;height:10px;background:var(--surface);border-radius:999px;overflow:hidden;}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--accent3),var(--accent5));border-radius:999px;transition:width 0.8s ease;}
+.xp-pts{font-size:0.82em;font-weight:800;color:var(--accent3);flex-shrink:0;}
+
+/* ─── CELEBRATION POPUP ─── */
+.celebration-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.75);
+  z-index:9999;
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+
+.celebration-overlay.active{display:flex;}
+
+.celebration-box{
+  background:var(--surface);
+  border:2px solid var(--accent3);
+  border-radius:24px;
+  padding:36px;
+  text-align:center;
+  max-width:360px;
+  width:90%;
+  animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow:0 0 60px rgba(255,219,107,0.3);
+}
+
+@keyframes popIn{from{transform:scale(0.5);opacity:0;}to{transform:scale(1);opacity:1;}}
+
+.celebration-emoji{font-size:4em;display:block;margin-bottom:10px;animation:spin 0.5s ease;}
+@keyframes spin{from{transform:rotate(-20deg) scale(0);}to{transform:rotate(0) scale(1);}}
+.celebration-title{font-family:'Fredoka One',cursive;font-size:1.8em;color:var(--accent3);margin-bottom:8px;}
+.celebration-sub{font-size:0.9em;color:var(--text2);}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:480px){
+  .stats-row{grid-template-columns:repeat(2,1fr);}
+  .dash-name{font-size:1.25em;}
+  .badges-grid{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+
+
+
+<div class="container">
+
+  <!-- ══ SCREEN 1: Register ══ -->
+  <div id="regScreen" class="screen active">
+    <div class="app-title">👋 Welcome!</div>
+    <p class="app-subtitle">No password needed – your profile saves automatically</p>
+    <div class="card">
+      <div class="input-group">
+        <label>Your Name</label>
+        <input type="text" id="userName" placeholder="Enter your name">
+      </div>
+      <button class="btn btn-primary" onclick="goToProfile()">Get Started →</button>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 3: Profile Setup ══ -->
+  <div id="profileScreen" class="screen">
+    <div class="app-title">⚙️ Your Profile</div>
+
+    <div class="card">
+      <div class="section-header"><h2>📋 Basic Info</h2></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+        <div class="input-group"><label>Age</label><input type="number" id="userAge" value="10" min="3" max="100"></div>
+        <div class="input-group"><label>Height (cm)</label><input type="number" id="userHeight" value="140"></div>
+        <div class="input-group"><label>Weight (kg)</label><input type="number" id="userWeight" value="40"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-header"><h2>🎯 Fitness Goal</h2></div>
+      <div class="options-grid">
+        <div class="option-card" data-goal="lose" onclick="selectOpt('goal','lose',this)">
+          <span class="option-icon">🔥</span><div class="option-info"><h3>Lose Weight</h3><p>Burn fat & get leaner</p></div>
+        </div>
+        <div class="option-card" data-goal="gain" onclick="selectOpt('goal','gain',this)">
+          <span class="option-icon">💪</span><div class="option-info"><h3>Gain Strength</h3><p>Build muscle & energy</p></div>
+        </div>
+        <div class="option-card" data-goal="maintain" onclick="selectOpt('goal','maintain',this)">
+          <span class="option-icon">⚖️</span><div class="option-info"><h3>Stay Healthy</h3><p>Balance & wellness</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-header"><h2>🥗 Diet Preference</h2></div>
+      <div class="options-grid">
+        <div class="option-card" data-diet="veg" onclick="selectOpt('diet','veg',this)">
+          <span class="option-icon">🥦</span><div class="option-info"><h3>Vegetarian</h3><p>Plant-based meals</p></div>
+        </div>
+        <div class="option-card" data-diet="nonveg" onclick="selectOpt('diet','nonveg',this)">
+          <span class="option-icon">🍗</span><div class="option-info"><h3>Non-Vegetarian</h3><p>Includes meat & fish</p></div>
+        </div>
+        <div class="option-card" data-diet="both" onclick="selectOpt('diet','both',this)">
+          <span class="option-icon">🍽️</span><div class="option-info"><h3>Both</h3><p>Flexible diet</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALLERGY FILTER (NEW) -->
+    <div class="card" style="border-color:rgba(255,77,107,0.3);">
+      <div class="section-header">
+        <h2>⚠️ Food Allergies</h2>
+        <span class="section-badge" style="background:linear-gradient(135deg,var(--danger),var(--accent5))">SAFETY</span>
+      </div>
+      <p style="font-size:0.85em;color:var(--text2);margin-bottom:10px;font-weight:600;">These will be automatically flagged or removed from your food plan.</p>
+      <div class="chips-wrap" id="allergyChips">
+        <div class="chip allergy-chip" onclick="toggleChip(this)">🥛 Dairy</div>
+        <div class="chip allergy-chip" onclick="toggleChip(this)">🥜 Peanuts/Nuts</div>
+        <div class="chip allergy-chip" onclick="toggleChip(this)">🌾 Gluten/Wheat</div>
+        <div class="chip allergy-chip" onclick="toggleChip(this)">🫘 Soy</div>
+        <div class="chip allergy-chip" onclick="toggleChip(this)">🦐 Seafood</div>
+        <div class="chip allergy-chip" onclick="toggleChip(this)">🥚 Eggs</div>
+        <div class="chip allergy-chip" onclick="toggleChip(this)">🍓 Berries</div>
+        <div class="chip allergy-chip" onclick="toggleChip(this)">✅ None</div>
+      </div>
+      <div class="custom-input-row">
+        <input type="text" id="customAllergy" placeholder="Add custom allergy (e.g. Shellfish)">
+        <button class="btn btn-danger" style="width:auto;padding:12px 16px;font-size:0.85em;" onclick="addCustomChip('allergyChips','customAllergy','⚠️','allergy-chip')">+ Add</button>
+      </div>
+    </div>
+
+    <!-- HEALTH CONDITION FILTER (NEW) -->
+    <div class="card" style="border-color:rgba(255,219,107,0.3);">
+      <div class="section-header">
+        <h2>🏥 Health Conditions</h2>
+        <span class="section-badge" style="background:linear-gradient(135deg,var(--warn),var(--accent5));color:#0a0a0f">ADAPTIVE</span>
+      </div>
+      <p style="font-size:0.85em;color:var(--text2);margin-bottom:10px;font-weight:600;">Your food and exercise plan will adapt to these conditions.</p>
+      <div class="chips-wrap" id="healthChips">
+        <div class="chip health-chip" onclick="toggleChip(this)">🩸 Diabetes</div>
+        <div class="chip health-chip" onclick="toggleChip(this)">❤️ Hypertension</div>
+        <div class="chip health-chip" onclick="toggleChip(this)">🦋 Thyroid</div>
+        <div class="chip health-chip" onclick="toggleChip(this)">🫁 Asthma</div>
+        <div class="chip health-chip" onclick="toggleChip(this)">🫀 High Cholesterol</div>
+        <div class="chip health-chip" onclick="toggleChip(this)">🦴 Arthritis</div>
+        <div class="chip health-chip" onclick="toggleChip(this)">🧠 ADHD</div>
+        <div class="chip health-chip" onclick="toggleChip(this)">✅ None</div>
+      </div>
+      <div class="custom-input-row">
+        <input type="text" id="customHealth" placeholder="Add condition (e.g. PCOS, Migraine)">
+        <button class="btn" style="background:linear-gradient(135deg,var(--warn),var(--accent5));color:#0a0a0f;width:auto;padding:12px 16px;font-size:0.85em;" onclick="addCustomChip('healthChips','customHealth','🏥','health-chip')">+ Add</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-header"><h2>📅 Tracking Period</h2></div>
+      <div class="options-grid">
+        <div class="option-card" data-period="weekly" onclick="selectOpt('period','weekly',this)">
+          <span class="option-icon">📅</span><div class="option-info"><h3>Weekly</h3></div>
+        </div>
+        <div class="option-card" data-period="monthly" onclick="selectOpt('period','monthly',this)">
+          <span class="option-icon">🗓️</span><div class="option-info"><h3>Monthly</h3></div>
+        </div>
+        <div class="option-card" data-period="3months" onclick="selectOpt('period','3months',this)">
+          <span class="option-icon">📊</span><div class="option-info"><h3>3 Months</h3></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-secondary" onclick="goTo('regScreen')">← Back</button>
+      <button class="btn btn-primary" onclick="saveProceed()">Build My Plan 🚀</button>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 4: Dashboard ══ -->
+  <div id="dashScreen" class="screen">
+
+    <!-- Header -->
+    <div class="dash-header">
+      <div class="avatar" id="dashAvatar">👤</div>
+      <div style="flex:1;min-width:0">
+        <div class="dash-name" id="dashName">User</div>
+        <div class="dash-goal" id="dashGoal">Goal</div>
+        <div class="age-badge" id="ageBadge">👶 Child Mode</div>
+      </div>
+      <button class="btn logout-btn" onclick="logout()">🚪 Logout</button>
+    </div>
+
+    <!-- XP Bar -->
+    <div class="xp-bar-wrap">
+      <span class="xp-label">⭐ XP</span>
+      <div class="xp-bar"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+      <span class="xp-pts" id="xpPts">0 / 100</span>
+    </div>
+
+    <!-- Nav Tabs -->
+    <div class="nav-tabs">
+      <div class="nav-tab active" onclick="switchTab('overview',event)">🏠 Home</div>
+      <div class="nav-tab" onclick="switchTab('diet',event)">🥗 Food</div>
+      <div class="nav-tab" onclick="switchTab('exercise',event)">🏃 Exercise</div>
+      <div class="nav-tab" onclick="switchTab('challenges',event)">⚡ Challenges</div>
+      <div class="nav-tab" onclick="switchTab('badges',event)">🏆 Badges</div>
+      <div class="nav-tab" onclick="switchTab('progress',event)">📈 Progress</div>
+    </div>
+
+    <div id="overviewTab" class="tab-content active"><div id="overviewContent"></div></div>
+    <div id="dietTab" class="tab-content"><div id="dietContent"></div></div>
+    <div id="exerciseTab" class="tab-content"><div id="exerciseContent"></div></div>
+    <div id="challengesTab" class="tab-content"><div id="challengesContent"></div></div>
+    <div id="badgesTab" class="tab-content"><div id="badgesContent"></div></div>
+    <div id="progressTab" class="tab-content"><div id="progressContent"></div></div>
+  </div>
+</div>
+
+<!-- Celebration Popup -->
+<div class="celebration-overlay" id="celebOverlay" onclick="closeCelebration()">
+  <div class="celebration-box">
+    <span class="celebration-emoji" id="celebEmoji">🎉</span>
+    <div class="celebration-title" id="celebTitle">Badge Unlocked!</div>
+    <p class="celebration-sub" id="celebSub">Keep going!</p>
+    <button class="btn btn-primary" style="margin-top:18px" onclick="closeCelebration()">Awesome! 🌟</button>
+  </div>
+</div>
+
+<!-- Logout Confirmation Modal -->
+<div class="celebration-overlay" id="logoutOverlay">
+  <div class="celebration-box" style="border-color:var(--danger);box-shadow:0 0 60px rgba(255,77,107,0.25);">
+    <span class="celebration-emoji">🚪</span>
+    <div class="celebration-title" style="color:var(--danger)">Logout?</div>
+    <p class="celebration-sub" id="logoutUserName" style="font-size:1em;color:var(--text);margin:10px 0 4px;font-weight:800"></p>
+    <p class="celebration-sub">Your XP, badges and progress are <strong style="color:var(--safe)">saved</strong>. You can log back in anytime with your name.</p>
+    <div style="display:flex;gap:10px;margin-top:20px;">
+      <button class="btn btn-secondary" style="flex:1" onclick="cancelLogout()">Stay 💪</button>
+      <button class="btn btn-danger" style="flex:1" onclick="confirmLogout()">Yes, Logout</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════
+   STATE
+══════════════════════════════════════ */
+let selectedGoal = '';
+let selectedDiet = '';
+let selectedPeriod = '';
+
+/* ══════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════ */
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+
+
+/* ══════════════════════════════════════
+   OPTION SELECTION
+══════════════════════════════════════ */
+function selectOpt(type, val, el) {
+  document.querySelectorAll('[data-' + type + ']').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  if (type === 'goal') selectedGoal = val;
+  if (type === 'diet') selectedDiet = val;
+  if (type === 'period') selectedPeriod = val;
+}
+
+/* ══════════════════════════════════════
+   CHIPS
+══════════════════════════════════════ */
+function toggleChip(el) { el.classList.toggle('selected'); }
+
+function addCustomChip(containerId, inputId, prefix, cls) {
+  const inp = document.getElementById(inputId);
+  const val = inp.value.trim();
+  if (!val) return;
+  const chip = document.createElement('div');
+  chip.className = 'chip ' + cls + ' selected';
+  chip.textContent = prefix + ' ' + val;
+  chip.onclick = function() { toggleChip(this); };
+  document.getElementById(containerId).appendChild(chip);
+  inp.value = '';
+}
+
+function getChips(id) {
+  return Array.from(document.querySelectorAll('#' + id + ' .chip.selected'))
+    .map(c => c.textContent.trim().replace(/^[^\w]+\s*/, '').toLowerCase());
+}
+
+/* ══════════════════════════════════════
+   REGISTRATION FLOW
+══════════════════════════════════════ */
+function goToProfile() {
+  const name = document.getElementById('userName').value.trim();
+  if (!name) { alert('Please enter your name!'); return; }
+
+  const saved = localStorage.getItem('fitlife_user');
+  if (saved) {
+    const u = JSON.parse(saved);
+    // Existing user — go straight to dashboard
+    if (u.name && u.name.toLowerCase() === name.toLowerCase()) {
+      let userData = refreshPlanIfNewDay(u);
+      renderDashboard(userData);
+      goTo('dashScreen');
+      return;
+    }
+  }
+
+  // New user — save name and show profile setup
+  localStorage.setItem('fitlife_name', name);
+  goTo('profileScreen');
+}
+
+function saveProceed() {
+  const age = parseInt(document.getElementById('userAge').value) || 0;
+  const height = document.getElementById('userHeight').value;
+  const weight = document.getElementById('userWeight').value;
+  if (!age || !height || !weight) { alert('Please fill in all basic info!'); return; }
+  if (!selectedGoal) { alert('Please select a fitness goal!'); return; }
+  if (!selectedDiet) { alert('Please select a diet preference!'); return; }
+  if (!selectedPeriod) { alert('Please select a tracking period!'); return; }
+
+  const allergies = getChips('allergyChips').filter(a => a !== 'none');
+  const health = getChips('healthChips').filter(h => h !== 'none');
+
+  const userData = {
+    name: localStorage.getItem('fitlife_name'),
+    age, height, weight,
+    goal: selectedGoal,
+    diet: selectedDiet,
+    period: selectedPeriod,
+    allergies,
+    health,
+    xp: 0,
+    completedItems: [],
+    unlockedBadges: ['starter_spark', 'goal_explorer'],
+    challengeProgress: {},
+    lastPlanDate: getTodayDateStr()
+  };
+
+  const plans = buildPlans(userData);
+  userData.dietPlan = plans.diet;
+  userData.exercisePlan = plans.exercise;
+
+  localStorage.setItem('fitlife_user', JSON.stringify(userData));
+  renderDashboard(userData);
+  goTo('dashScreen');
+}
+
+/* ══════════════════════════════════════
+   PLAN GENERATION WITH ALLERGY/HEALTH FILTERING
+══════════════════════════════════════ */
+const ALLERGY_MAP = {
+  'dairy': ['milk','paneer','curd','cheese','butter','ghee','yogurt','cream'],
+  'peanuts': ['peanut','groundnut'],
+  'nuts': ['nuts','almond','walnut','cashew'],
+  'peanuts/nuts': ['peanut','groundnut','nuts','almond','walnut','cashew'],
+  'gluten': ['wheat','roti','chapati','paratha','bread','toast','rava','upma'],
+  'gluten/wheat': ['wheat','roti','chapati','paratha','bread','toast','rava','upma'],
+  'soy': ['soya','soy','tofu'],
+  'seafood': ['fish','seafood','prawn','shrimp'],
+  'eggs': ['egg'],
+  'berries': ['berry','berries','strawberry']
+};
+
+const HEALTH_MAP = {
+  'diabetes': {
+    avoid: ['sugar','banana shake','fruit juice','white rice','sweet'],
+    prefer: ['millet','oats','sprout','chickpea','dal','vegetable'],
+    exerciseAvoid: ['hiit','weight training'],
+    exercisePrefer: ['walking','yoga','cycling']
+  },
+  'hypertension': {
+    avoid: ['salt','salty','pickle'],
+    prefer: ['oats','fruit','vegetable','sprout'],
+    exerciseAvoid: ['hiit','weight training'],
+    exercisePrefer: ['walking','yoga','stretching','mobility']
+  },
+  'high cholesterol': {
+    avoid: ['ghee','butter','fried','egg yolk'],
+    prefer: ['oats','chickpea','fish','vegetable'],
+    exercisePrefer: ['walking','cycling','yoga']
+  },
+  'arthritis': {
+    avoid: [],
+    prefer: ['fish','vegetable','fruit'],
+    exerciseAvoid: ['jump rope','hiit','mountain climbers','squat','lunge'],
+    exercisePrefer: ['walking','yoga','stretching','mobility','swimming']
+  },
+  'asthma': {
+    avoid: [],
+    prefer: [],
+    exerciseAvoid: ['hiit','jump rope'],
+    exercisePrefer: ['walking','yoga','swimming','stretching']
+  },
+  'thyroid': {
+    avoid: ['soy','soya'],
+    prefer: ['fish','egg','vegetable','fruit'],
+    exercisePrefer: ['walking','yoga','cycling']
+  }
+};
+
+function hasAllergen(foodName, allergies) {
+  const lower = foodName.toLowerCase();
+  for (const allergy of allergies) {
+    const keywords = ALLERGY_MAP[allergy] || [allergy];
+    for (const kw of keywords) {
+      if (lower.includes(kw)) return allergy;
+    }
+  }
+  return null;
+}
+
+function healthFlagFood(foodName, healthConditions) {
+  const lower = foodName.toLowerCase();
+  for (const cond of healthConditions) {
+    const rule = HEALTH_MAP[cond];
+    if (!rule) continue;
+    for (const avoid of (rule.avoid || [])) {
+      if (lower.includes(avoid)) return cond;
+    }
+  }
+  return null;
+}
+
+/* ── 7-day rotating food pools (6 meals each day per goal+diet combo) ── */
+const DIET_POOL = {
+  lose: {
+    veg: [
+      ['Oats with fruit','Sprout salad','Vegetable soup','Paneer and salad bowl','Millet khichdi with curd','Fruit and nuts snack'],
+      ['Vegetable upma','Cucumber raita','Tomato dal soup','Mixed veggie stir fry','Millet porridge','Apple with peanut butter'],
+      ['Poha with vegetables','Green salad bowl','Spinach dal','Paneer tikka salad','Ragi khichdi','Orange and nuts'],
+      ['Idli with sambar','Sprout chaat','Drumstick soup','Tofu veggie bowl','Bajra khichdi','Watermelon slices'],
+      ['Vegetable dalia','Beet and carrot salad','Tomato soup','Paneer bhurji salad','Quinoa vegetable bowl','Papaya bowl'],
+      ['Besan chilla','Cucumber mint salad','Lentil soup','Mixed dal bowl','Jowar khichdi','Guava and nuts'],
+      ['Moong dal chilla','Sweet potato salad','Clear veg broth','Palak paneer bowl','Foxtail millet bowl','Pear with almonds']
+    ],
+    nonveg: [
+      ['Boiled eggs','Grilled chicken salad','Fish with vegetables','Clear soup','Chicken millet bowl','Egg white veggie wrap'],
+      ['Egg omelette','Tuna salad','Grilled fish','Chicken clear soup','Chicken quinoa bowl','Boiled egg snack'],
+      ['Scrambled eggs','Chicken cucumber salad','Baked fish','Prawn soup','Turkey millet bowl','Egg and carrot sticks'],
+      ['Poached eggs','Grilled chicken strips','Steamed fish bowl','Chicken bone broth','Chicken lettuce wrap','Boiled eggs with tomato'],
+      ['Egg bhurji','Chicken avocado salad','Fish tikka','Lemon chicken soup','Chicken cauliflower bowl','Egg white toast'],
+      ['Omelette with spinach','Turkey salad','Grilled sardines','Chicken mushroom soup','Fish quinoa bowl','Boiled eggs with cucumber'],
+      ['Egg and veggie scramble','Grilled chicken bowl','Fish stew','Tomato chicken soup','Prawn veggie bowl','Egg salad cups']
+    ],
+    both: [
+      ['Oats with fruit','Boiled eggs','Sprout salad','Grilled chicken salad','Vegetable soup','Fish with vegetables'],
+      ['Poha with vegetables','Egg omelette','Green salad','Chicken cucumber salad','Lentil soup','Grilled fish'],
+      ['Idli with sambar','Scrambled eggs','Sprout chaat','Tuna salad','Drumstick soup','Baked fish'],
+      ['Vegetable dalia','Poached eggs','Beet salad','Chicken strips','Tomato soup','Fish tikka'],
+      ['Ragi porridge','Egg bhurji','Mixed veggie salad','Turkey salad','Palak soup','Steamed fish'],
+      ['Besan chilla','Omelette with spinach','Cucumber mint salad','Grilled chicken','Clear veg broth','Prawn bowl'],
+      ['Moong chilla','Egg veggie scramble','Sweet potato salad','Chicken lettuce wrap','Lemon soup','Fish stew']
+    ]
+  },
+  gain: {
+    veg: [
+      ['Paneer paratha','Rice with dal','Milk and banana shake','Soya chunks curry','Peanut butter toast','Chickpea salad bowl'],
+      ['Masala oats','Rajma rice','Mango lassi','Tofu curry','Almond butter bread','Lentil salad'],
+      ['Aloo paratha','Chole rice','Peanut milkshake','Soya keema','Whole wheat toast with ghee','Kidney bean bowl'],
+      ['Methi paratha','Dal makhani rice','Banana walnut shake','Paneer bhurji','Peanut butter banana toast','Mixed bean salad'],
+      ['Poha with peanuts','Chana masala rice','Mango banana shake','Edamame curry','Tahini toast','Chickpea power bowl'],
+      ['Vegetable paratha','Sambar rice','Avocado shake','Mushroom soya curry','Nut butter toast','Mixed lentil bowl'],
+      ['Stuffed capsicum paratha','Palak rice','Dates milkshake','Tofu scramble','Sesame toast','Black bean salad']
+    ],
+    nonveg: [
+      ['Egg omelette','Chicken rice bowl','Milk and nuts','Fish curry with rice','Chicken sandwich','Egg and potato bowl'],
+      ['Boiled egg toast','Mutton rice','Protein shake','Prawn curry rice','Egg mayonnaise sandwich','Chicken potato bowl'],
+      ['Egg paratha','Chicken biryani','Milk and almonds','Fish fry with rice','Tuna sandwich','Egg keema bowl'],
+      ['Egg dosa','Lamb rice','Banana egg shake','Crab curry rice','Chicken club sandwich','Boiled egg sweet potato'],
+      ['Omelette paratha','Chicken pulao','Milk and cashews','Fish masala rice','Turkey sandwich','Egg and corn bowl'],
+      ['Egg bhurji paratha','Mutton curry rice','Peanut protein shake','Prawn masala rice','Chicken mayo wrap','Egg pea bowl'],
+      ['Scrambled egg toast','Chicken fried rice','Milk and dates','Fish pepper rice','Salmon sandwich','Egg mushroom bowl']
+    ],
+    both: [
+      ['Paneer paratha','Egg omelette','Rice with dal','Chicken rice bowl','Milk and banana shake','Fish curry with rice'],
+      ['Masala oats','Egg toast','Rajma rice','Mutton rice bowl','Mango lassi','Prawn curry'],
+      ['Aloo paratha','Egg bhurji','Chole rice','Chicken biryani','Banana shake','Fish fry rice'],
+      ['Methi paratha','Scrambled egg','Dal makhani','Lamb rice','Peanut milkshake','Prawn masala'],
+      ['Poha peanuts','Omelette','Chana rice','Chicken pulao','Mango shake','Fish masala'],
+      ['Vegetable paratha','Egg paratha','Sambar rice','Mutton curry rice','Avocado shake','Tuna rice'],
+      ['Stuffed paratha','Egg dosa','Palak rice','Chicken fried rice','Dates shake','Crab curry rice']
+    ]
+  },
+  maintain: {
+    veg: [
+      ['Balanced thali','Curd rice','Vegetable upma','Dal with chapati','Paneer veggie wrap','Seasonal fruit bowl'],
+      ['Idli sambar','Khichdi','Vegetable poha','Rajma chapati','Tofu wrap','Mixed fruit bowl'],
+      ['Dosa with chutney','Jeera rice','Rava upma','Moong dal roti','Paneer bhurji wrap','Papaya bowl'],
+      ['Pongal','Lemon rice','Oats upma','Spinach chapati','Soya veggie wrap','Mango bowl'],
+      ['Uttapam','Tomato rice','Semolina upma','Methi roti','Cottage cheese wrap','Guava slices'],
+      ['Pesarattu','Coconut rice','Ragi upma','Besan roti','Tofu veggie roll','Watermelon bowl'],
+      ['Adai','Tamarind rice','Millet upma','Multigrain chapati','Paneer cucumber wrap','Mixed citrus bowl']
+    ],
+    nonveg: [
+      ['Egg sandwich','Chicken stew','Fish with rice','Balanced thali','Chicken soup','Egg salad bowl'],
+      ['Boiled egg toast','Mutton stew','Prawn rice','Chicken thali','Tomato chicken soup','Tuna salad'],
+      ['Egg poha','Fish stew','Crab rice','Mixed thali','Chicken lemon soup','Egg cucumber bowl'],
+      ['Omelette chapati','Chicken vegetable stew','Fish pilaf','Non-veg thali','Prawn soup','Egg tomato bowl'],
+      ['Egg dosa','Mutton pepper stew','Salmon rice','Chicken thali','Chicken mushroom soup','Egg avocado bowl'],
+      ['Scrambled egg roti','Prawn stew','Mackerel rice','Fish thali','Lemon chicken broth','Boiled egg veggie bowl'],
+      ['Egg paratha','Chicken curry stew','Tuna rice','Egg thali','Fish pepper soup','Egg spinach bowl']
+    ],
+    both: [
+      ['Balanced thali','Egg sandwich','Curd rice','Chicken stew','Paneer veggie wrap','Fish with rice'],
+      ['Idli sambar','Boiled egg toast','Khichdi','Mutton stew','Tofu wrap','Prawn rice'],
+      ['Dosa chutney','Omelette chapati','Jeera rice','Fish stew','Paneer roll','Chicken rice'],
+      ['Pongal','Egg poha','Lemon rice','Chicken vegetable stew','Soya wrap','Fish pilaf'],
+      ['Uttapam','Egg dosa','Tomato rice','Mutton pepper stew','Cottage wrap','Salmon rice'],
+      ['Pesarattu','Scrambled egg roti','Coconut rice','Prawn stew','Tofu veggie roll','Mackerel rice'],
+      ['Adai','Egg paratha','Tamarind rice','Chicken curry stew','Paneer cucumber roll','Tuna rice']
+    ]
+  }
+};
+
+const ALL_EXERCISE_PLANS = {
+  lose: ['Brisk walking - 30 min','Cycling - 20 min','Bodyweight HIIT - 15 min','Stretching - 10 min','Jump rope - 10 min','Mountain climbers - 3 sets'],
+  gain: ['Push-ups - 3 sets','Squats - 3 sets','Weight training - 30 min','Core workout - 10 min','Lunges - 3 sets','Shoulder press - 3 sets'],
+  maintain: ['Walking - 30 min','Yoga - 20 min','Light strength training - 20 min','Mobility work - 10 min','Plank hold - 3 rounds','Easy cycling - 20 min']
+};
+
+/* Get today's day index (0-6), stable for the whole day */
+function getTodayIndex() {
+  const now = new Date();
+  const daysSinceEpoch = Math.floor(now.getTime() / 86400000);
+  return daysSinceEpoch % 7;
+}
+
+/* Get the date string for today, used to detect day change */
+function getTodayDateStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+}
+
+function buildPlans(userData) {
+  const goal = userData.goal || 'maintain';
+  const dietKey = userData.diet === 'nonveg' ? 'nonveg' : userData.diet === 'both' ? 'both' : 'veg';
+  const allergies = (userData.allergies || []).map(a => a.toLowerCase());
+  const health = (userData.health || []).map(h => h.toLowerCase());
+
+  // Pick today's day slot (0-6)
+  const dayIdx = getTodayIndex();
+  const todayFoods = DIET_POOL[goal][dietKey][dayIdx];
+
+  // Annotate foods with allergy/health flags
+  const diet = todayFoods.map(food => {
+    const allergen = hasAllergen(food, allergies);
+    const healthIssue = healthFlagFood(food, health);
+    return { name: food, allergen, healthIssue };
+  });
+
+  // Build exercise list with health/age safety checks
+  let exerciseAvoid = [];
+  for (const cond of health) {
+    const rule = HEALTH_MAP[cond];
+    if (rule) exerciseAvoid = exerciseAvoid.concat(rule.exerciseAvoid || []);
+  }
+
+  const age = userData.age;
+  const exercise = ALL_EXERCISE_PLANS[goal].map(ex => {
+    const lower = ex.toLowerCase();
+    let safe = true;
+    let note = '';
+    for (const avoid of exerciseAvoid) {
+      if (lower.includes(avoid)) { safe = false; note = 'Not recommended for your health condition'; break; }
+    }
+    if (age < 10 && (lower.includes('weight training') || lower.includes('hiit'))) {
+      safe = false; note = 'Too intense for young children';
+    }
+    if (age > 60 && (lower.includes('hiit') || lower.includes('jump rope') || lower.includes('mountain climbers'))) {
+      safe = false; note = 'Modified or skipped for seniors';
+    }
+    return { name: ex.split(' - ')[0], duration: ex.includes(' - ') ? ex.split(' - ').slice(1).join(' - ') : '', safe, note };
+  });
+
+  return { diet, exercise };
+}
+
+/* Check if plan needs refreshing (new day) and refresh if so */
+function refreshPlanIfNewDay(userData) {
+  const today = getTodayDateStr();
+  if (userData.lastPlanDate === today) return userData; // same day, no change
+
+  // New day — rebuild diet plan, reset today's completions but keep badge/XP history
+  const plans = buildPlans(userData);
+  userData.dietPlan = plans.diet;
+  userData.exercisePlan = plans.exercise;
+  userData.lastPlanDate = today;
+  // Reset only today's completed items so streaks/history aren't wiped
+  userData.completedItems = (userData.completedItems || []).filter(i => i.date && i.date === today);
+  localStorage.setItem('fitlife_user', JSON.stringify(userData));
+  return userData;
+}
+
+/* ══════════════════════════════════════
+   CHALLENGES SYSTEM
+══════════════════════════════════════ */
+const CHALLENGES_DEF = [
+  { id:'ch_meals3',     icon:'🥗', title:'Meal Warrior',        desc:'Complete 3 meals from your plan',          goal:3, type:'meal',   reward:'🏅 Meal Warrior Badge + 30 XP' },
+  { id:'ch_exercise3',  icon:'🏃', title:'Exercise Hero',       desc:'Complete 3 exercise sessions',             goal:3, type:'exercise',reward:'🏅 Exercise Hero Badge + 30 XP' },
+  { id:'ch_week',       icon:'📅', title:'7-Day Streak',        desc:'Check in 7 days in a row',                 goal:7, type:'streak',  reward:'🌟 Streak Master Badge + 50 XP' },
+  { id:'ch_water',      icon:'💧', title:'Hydration Hero',      desc:'Log water 5 times',                        goal:5, type:'water',   reward:'💧 Hydration Badge + 20 XP' },
+  { id:'ch_allergy',    icon:'🛡️', title:'Allergy Guardian',    desc:'Complete 5 allergy-safe meals',            goal:5, type:'safe_meal',reward:'🛡️ Safety Expert Badge + 25 XP' },
+  { id:'ch_badges5',    icon:'🏆', title:'Badge Collector',     desc:'Unlock 5 badges total',                    goal:5, type:'badges',  reward:'👑 Champion Crown + 40 XP' },
+  { id:'ch_child1',     icon:'🎮', title:'Junior Fitness Star', desc:'Complete your first kids workout',         goal:1, type:'exercise',reward:'⭐ Rising Star Badge + 15 XP' },
+  { id:'ch_elder1',     icon:'🌿', title:'Gentle Wellness',     desc:'Complete 3 gentle exercises (yoga/walk)',  goal:3, type:'gentle',  reward:'🌿 Wellness Badge + 25 XP' }
+];
+
+function getChallengeProgress(userData, ch) {
+  const p = (userData.challengeProgress || {})[ch.id] || 0;
+  if (ch.type === 'meal') return Math.min(p, ch.goal);
+  if (ch.type === 'exercise') return Math.min((userData.completedItems || []).filter(i => i.type === 'exercise').length, ch.goal);
+  if (ch.type === 'safe_meal') return Math.min((userData.completedItems || []).filter(i => i.type === 'diet' && i.safe).length, ch.goal);
+  if (ch.type === 'badges') return Math.min((userData.unlockedBadges || []).length, ch.goal);
+  if (ch.type === 'gentle') return Math.min((userData.completedItems || []).filter(i => i.type === 'exercise' && (i.name.toLowerCase().includes('yoga') || i.name.toLowerCase().includes('walk') || i.name.toLowerCase().includes('stretch'))).length, ch.goal);
+  return p;
+}
+
+/* ══════════════════════════════════════
+   BADGES DEFINITION
+══════════════════════════════════════ */
+const BADGES_DEF = [
+  { id:'starter_spark',    icon:'✨', title:'Starter Spark',      desc:'You started your healthy journey!' },
+  { id:'goal_explorer',    icon:'🎯', title:'Goal Explorer',      desc:'You set a fitness goal!' },
+  { id:'meal_hero',        icon:'🥘', title:'Meal Hero',          desc:'Completed a meal from your plan' },
+  { id:'exercise_star',    icon:'⭐', title:'Exercise Star',      desc:'Completed a workout session' },
+  { id:'allergy_safe',     icon:'🛡️', title:'Allergy Guardian',  desc:'Completed 5 allergy-safe meals' },
+  { id:'hydration_ranger', icon:'💧', title:'Hydration Ranger',  desc:'Stayed hydrated every day' },
+  { id:'consistency',      icon:'🔥', title:'Consistency King',  desc:'Followed plan for 3+ days' },
+  { id:'meal_warrior',     icon:'🏅', title:'Meal Warrior',      desc:'Completed 3 meals challenge' },
+  { id:'exercise_hero',    icon:'🏃', title:'Exercise Hero',     desc:'Completed 3 exercise challenge' },
+  { id:'streak_master',    icon:'🌟', title:'Streak Master',     desc:'7-day check-in streak' },
+  { id:'champion',         icon:'👑', title:'FitLife Champion',  desc:'Unlocked 5 badges!' },
+  { id:'rising_star',      icon:'🌠', title:'Rising Star',       desc:'Completed first kids workout' },
+  { id:'wellness',         icon:'🌿', title:'Gentle Wellness',   desc:'Completed gentle exercises' },
+  { id:'nutrition_ninja',  icon:'🥷', title:'Nutrition Ninja',   desc:'Learned about food nutrients' }
+];
+
+/* ══════════════════════════════════════
+   RENDER DASHBOARD
+══════════════════════════════════════ */
+function renderDashboard(userData) {
+  const age = parseInt(userData.age) || 25;
+  const isChild = age < 18;
+  const isElder = age >= 60;
+
+  // Update header
+  document.getElementById('dashName').textContent = userData.name;
+  document.getElementById('dashGoal').textContent = '🎯 ' + goalLabel(userData.goal);
+  document.getElementById('dashAvatar').textContent = isChild ? '🧒' : isElder ? '🧓' : '👤';
+
+  const ageBadge = document.getElementById('ageBadge');
+  if (isChild) {
+    ageBadge.textContent = '🎮 Kid Mode – Age ' + age;
+    ageBadge.style.background = 'rgba(107,255,255,0.15)';
+    ageBadge.style.borderColor = 'var(--accent2)';
+    ageBadge.style.color = 'var(--accent2)';
+  } else if (isElder) {
+    ageBadge.textContent = '🌿 Senior Mode – Age ' + age;
+    ageBadge.style.background = 'rgba(107,255,158,0.12)';
+    ageBadge.style.borderColor = 'var(--safe)';
+    ageBadge.style.color = 'var(--safe)';
+  } else {
+    ageBadge.textContent = '💪 Adult – Age ' + age;
+    ageBadge.style.background = 'rgba(255,219,107,0.15)';
+  }
+
+  // XP
+  const xp = userData.xp || 0;
+  const xpLevel = Math.floor(xp / 100);
+  const xpRemainder = xp % 100;
+  document.getElementById('xpFill').style.width = xpRemainder + '%';
+  document.getElementById('xpPts').textContent = 'Lvl ' + xpLevel + ' · ' + xpRemainder + '/100';
+
+  // Render tabs
+  renderOverview(userData, isChild, isElder);
+  renderDiet(userData);
+  renderExercise(userData, isChild, isElder);
+  renderChallenges(userData, isChild, isElder);
+  renderBadges(userData);
+  renderProgress(userData);
+}
+
+/* ── OVERVIEW ── */
+function renderOverview(userData, isChild, isElder) {
+  const allergies = userData.allergies || [];
+  const health = userData.health || [];
+
+  let html = '';
+
+  // Allergy warning
+  if (allergies.length > 0) {
+    html += `<div class="allergy-banner">
+      <span class="icon">⚠️</span>
+      <div class="text">Allergy filter active: <span>${allergies.join(', ')}</span> — these are flagged in your food plan.</div>
+    </div>`;
+  }
+
+  // Health warning
+  if (health.length > 0) {
+    html += `<div class="health-banner">
+      <span class="icon">🏥</span>
+      <div class="text">Health adaptive plan for: <span>${health.join(', ')}</span> — your plan is customised.</div>
+    </div>`;
+  }
+
+  // Stats
+  const completed = (userData.completedItems || []).length;
+  const badges = (userData.unlockedBadges || []).length;
+  const xp = userData.xp || 0;
+  html += `<div class="stats-row">
+    <div class="stat-box"><div class="stat-val">${completed}</div><div class="stat-label">Completed</div></div>
+    <div class="stat-box"><div class="stat-val">${badges}</div><div class="stat-label">Badges</div></div>
+    <div class="stat-box"><div class="stat-val">${xp}</div><div class="stat-label">⭐ XP</div></div>
+  </div>`;
+
+  // Motivational message
+  const messages = isChild
+    ? ['🎮 Ready for today\'s adventure?', '🌟 You\'re a fitness superstar!', '🦸 Super kid, let\'s go!']
+    : isElder
+    ? ['🌿 Every gentle step counts!', '☀️ Wisdom and wellness together!', '💪 Strong and steady wins!']
+    : ['🔥 Let\'s crush today\'s goals!', '💪 Stronger every day!', '⭐ Your journey, your pace!'];
+  const msg = messages[Math.floor(Date.now() / 86400000) % messages.length];
+
+  html += `<div class="card" style="background:linear-gradient(135deg,rgba(255,107,255,0.08),rgba(107,255,255,0.05));border-color:rgba(255,107,255,0.2);margin-bottom:16px">
+    <h2 style="font-family:'Fredoka One',cursive;font-size:1.3em;margin-bottom:6px">${msg}</h2>
+    <p style="font-size:0.88em;color:var(--text2);line-height:1.6">Welcome back, <strong>${userData.name}</strong>! Your ${goalLabel(userData.goal).toLowerCase()} plan is personalised for you. Go to Food, Exercise, and Challenges to earn XP and unlock badges!</p>
+  </div>`;
+
+  // Quick challenge peek
+  const activeCh = CHALLENGES_DEF.filter(c => {
+    const p = getChallengeProgress(userData, c);
+    return p < c.goal;
+  }).slice(0, 2);
+
+  if (activeCh.length > 0) {
+    html += `<div class="section-header"><h2>⚡ Active Challenges</h2></div>`;
+    for (const ch of activeCh) {
+      const p = getChallengeProgress(userData, ch);
+      const pct = Math.round((p / ch.goal) * 100);
+      html += `<div class="challenge-card active-challenge">
+        <div class="challenge-icon-wrap">${ch.icon}</div>
+        <div class="challenge-info" style="flex:1">
+          <h3>${ch.title}</h3>
+          <p>${ch.desc}</p>
+          <div class="challenge-progress">
+            <div class="challenge-bar"><div class="challenge-fill" style="width:${pct}%"></div></div>
+          </div>
+          <div class="reward">${ch.reward}</div>
+        </div>
+        <div style="font-size:0.8em;color:var(--text2);font-weight:800">${p}/${ch.goal}</div>
+      </div>`;
+    }
+  }
+
+  document.getElementById('overviewContent').innerHTML = html;
+}
+
+/* ── DIET ── */
+function renderDiet(userData) {
+  const allergies = userData.allergies || [];
+  const health = userData.health || [];
+  let html = '';
+
+  const today = getTodayDateStr();
+  const dayIdx = getTodayIndex() + 1;
+  const dateDisplay = new Date().toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long' });
+
+  if (allergies.length > 0 || health.length > 0) {
+    html += `<div class="filtered-notice">✅ Your food plan is filtered for allergies (${allergies.length > 0 ? allergies.join(', ') : 'none'}) and health conditions (${health.length > 0 ? health.join(', ') : 'none'}).</div>`;
+  }
+
+  html += `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+    <span style="font-size:0.85em;color:var(--text2);font-weight:700">📅 ${dateDisplay}</span>
+    <span style="background:rgba(107,255,255,0.12);border:1px solid var(--accent2);color:var(--accent2);font-size:0.78em;font-weight:800;padding:4px 12px;border-radius:999px">Day ${dayIdx} of 7 · Refreshes at midnight 🌙</span>
+  </div>`;
+
+  const foods = userData.dietPlan || [];
+  html += `<div class="plan-grid">`;
+
+  foods.forEach((food, i) => {
+    const allergen = food.allergen;
+    const healthIssue = food.healthIssue;
+    const isSafe = !allergen && !healthIssue;
+    const completed = (userData.completedItems || []).some(it => it.name === food.name && it.type === 'diet' && it.date === getTodayDateStr());
+
+    const colors = [
+      'linear-gradient(135deg,#1a0a2e,#2e1a0a)',
+      'linear-gradient(135deg,#0a2e1a,#0a1a2e)',
+      'linear-gradient(135deg,#2e0a2e,#0a2e2e)',
+      'linear-gradient(135deg,#2e1a0a,#0a2e1a)',
+    ];
+    const bg = colors[i % colors.length];
+
+    const imgSrc = getFoodPhotoUrl(food.name);
+
+    let flags = '';
+    if (allergen) flags += `<span class="allergy-flag">⚠️ Contains ${allergen}</span>`;
+    else if (healthIssue) flags += `<span class="health-flag">🏥 Caution: ${healthIssue}</span>`;
+    else flags += `<span class="safe-flag">✅ Safe for you</span>`;
+
+    const cardBorder = allergen ? 'border-color:rgba(255,77,107,0.4)' : healthIssue ? 'border-color:rgba(255,219,107,0.3)' : '';
+
+    html += `<div class="plan-card" style="${cardBorder}">
+      <img class="plan-card-img" src="${imgSrc}" alt="${food.name}" onerror="this.onerror=null;this.src='${makeFoodFallback(food.name, i)}'">
+      <div class="plan-card-body">
+        <h3>${food.name}</h3>
+        ${flags}
+        <div class="plan-meta"><span class="mini-pill">${getDietTime(food.name, i)}</span></div>
+        <button class="details-toggle" onclick="toggleDetails(this)">📖 Show Recipe <span class="arrow">▶</span></button>
+        <div class="instruction-box collapsed">${getDietRecipeHTML(food.name)}</div>
+        ${allergen
+          ? `<button class="complete-btn" style="background:var(--surface2);color:var(--text2);cursor:not-allowed;" disabled>⚠️ Allergy Warning</button>`
+          : `<button class="complete-btn ${completed ? 'done' : ''}" onclick="completeItem('diet','${food.name.replace(/'/g,"\\'")}',${isSafe},this)">${completed ? '🎉 Completed!' : '✅ Mark Complete'}</button>`
+        }
+      </div>
+    </div>`;
+  });
+
+  html += '</div>';
+  document.getElementById('dietContent').innerHTML = html;
+}
+
+/* ── EXERCISE ── */
+function renderExercise(userData, isChild, isElder) {
+  let html = '';
+  const exercises = userData.exercisePlan || [];
+
+  if (isChild) {
+    html += `<div class="filtered-notice">🎮 Kid-friendly exercises! Unsafe ones are marked below.</div>`;
+  } else if (isElder) {
+    html += `<div class="filtered-notice">🌿 Senior-adapted exercises. High-impact ones are modified or skipped.</div>`;
+  }
+
+  html += `<div class="plan-grid">`;
+
+  exercises.forEach((ex, i) => {
+    const completed = (userData.completedItems || []).some(it => it.name === ex.name && it.type === 'exercise' && it.date === getTodayDateStr());
+    const imgSrc = getExercisePhotoUrl(ex.name);
+
+    const gradients = [
+      ['#0a2e1a','#1a0a2e'],['#2e0a0a','#0a1a2e'],['#0a0a2e','#1a2e0a'],
+      ['#2e1a2e','#0a2e2e']
+    ];
+    const g = gradients[i % gradients.length];
+
+    let safeFlag = '';
+    if (!ex.safe) safeFlag = `<span class="allergy-flag" style="border-color:var(--warn);color:var(--warn);background:rgba(255,219,107,0.1)">⚠️ ${ex.note}</span>`;
+    else safeFlag = `<span class="safe-flag">✅ Suitable for you</span>`;
+
+    html += `<div class="plan-card" style="${!ex.safe ? 'border-color:rgba(255,219,107,0.3);opacity:0.75' : ''}">
+      <img class="plan-card-img" src="${imgSrc}" alt="${ex.name}" onerror="this.onerror=null;this.src='${makeExerciseFallback(ex.name, i)}'">
+      <div class="plan-card-body">
+        <h3>${ex.name}</h3>
+        ${safeFlag}
+        <div class="plan-meta"><span class="mini-pill">${ex.duration || 'Daily'}</span></div>
+        <button class="details-toggle" onclick="toggleDetails(this)">📖 How To <span class="arrow">▶</span></button>
+        <div class="instruction-box collapsed">${getExerciseHTML(ex.name)}</div>
+        ${ex.safe
+          ? `<button class="complete-btn ${completed ? 'done' : ''}" onclick="completeItem('exercise','${ex.name.replace(/'/g,"\\'")}',true,this)">${completed ? '🎉 Done!' : '💪 Mark Done'}</button>`
+          : `<button class="complete-btn" style="background:var(--surface2);color:var(--text2);cursor:not-allowed;" disabled>⚠️ Skip This</button>`
+        }
+      </div>
+    </div>`;
+  });
+
+  html += '</div>';
+  document.getElementById('exerciseContent').innerHTML = html;
+}
+
+/* ── CHALLENGES ── */
+function renderChallenges(userData, isChild, isElder) {
+  let html = `<p style="font-size:0.88em;color:var(--text2);margin-bottom:16px;font-weight:600;">Complete challenges to earn XP and unlock special badges! 🏆</p>`;
+
+  const relevant = CHALLENGES_DEF.filter(ch => {
+    if (isChild && (ch.id === 'ch_elder1')) return false;
+    if (!isChild && ch.id === 'ch_child1') return !isElder;
+    return true;
+  });
+
+  for (const ch of relevant) {
+    const p = getChallengeProgress(userData, ch);
+    const pct = Math.round((p / ch.goal) * 100);
+    const done = p >= ch.goal;
+
+    html += `<div class="challenge-card ${done ? 'completed-challenge' : 'active-challenge'}">
+      <div class="challenge-icon-wrap">${ch.icon}</div>
+      <div class="challenge-info" style="flex:1">
+        <h3>${ch.title} ${done ? '✅' : ''}</h3>
+        <p>${ch.desc}</p>
+        <div class="challenge-progress">
+          <div style="display:flex;justify-content:space-between;font-size:0.78em;color:var(--text2);margin-bottom:4px;font-weight:700">
+            <span>${done ? '🎉 Completed!' : 'Progress'}</span><span>${p}/${ch.goal}</span>
+          </div>
+          <div class="challenge-bar"><div class="challenge-fill" style="width:${pct}%;${done ? 'background:linear-gradient(90deg,var(--safe),var(--accent2))' : ''}"></div></div>
+        </div>
+        <div class="reward">${ch.reward}</div>
+      </div>
+    </div>`;
+  }
+
+  // Water log button
+  html += `<div class="card" style="margin-top:16px;text-align:center">
+    <p style="font-weight:800;margin-bottom:10px">💧 Log Water Intake</p>
+    <p style="font-size:0.85em;color:var(--text2);margin-bottom:14px">Stay hydrated! Each log counts toward Hydration Hero challenge.</p>
+    <button class="btn btn-success" onclick="logWater()" style="width:auto;padding:12px 28px">💧 I Drank Water!</button>
+  </div>`;
+
+  document.getElementById('challengesContent').innerHTML = html;
+}
+
+/* ── BADGES ── */
+function renderBadges(userData) {
+  const unlocked = userData.unlockedBadges || [];
+  let html = `<p style="font-size:0.88em;color:var(--text2);margin-bottom:16px;font-weight:600;">${unlocked.length} / ${BADGES_DEF.length} badges unlocked! Keep going! 🌟</p>`;
+
+  html += `<div class="badges-grid">`;
+  for (const b of BADGES_DEF) {
+    const isUnlocked = unlocked.includes(b.id);
+    html += `<div class="badge-card ${isUnlocked ? 'unlocked' : ''}">
+      <span class="badge-icon">${b.icon}</span>
+      <h3>${b.title}</h3>
+      <p>${isUnlocked ? b.desc : '🔒 Keep going to unlock!'}</p>
+    </div>`;
+  }
+  html += '</div>';
+  document.getElementById('badgesContent').innerHTML = html;
+}
+
+/* ── PROGRESS ── */
+function renderProgress(userData) {
+  const completed = (userData.completedItems || []).length;
+  const meals = (userData.completedItems || []).filter(i => i.type === 'diet').length;
+  const exs = (userData.completedItems || []).filter(i => i.type === 'exercise').length;
+  const startW = parseFloat(userData.weight) || 0;
+  const targetChange = userData.goal === 'lose' ? -5 : userData.goal === 'gain' ? 5 : 0;
+  const targetW = startW + targetChange;
+
+  const pct = Math.min(Math.round((completed / Math.max(1, (userData.dietPlan || []).length + (userData.exercisePlan || []).length)) * 100), 100);
+
+  let html = `
+  <div class="card">
+    <h3 style="font-weight:800;margin-bottom:14px">📊 Your Progress</h3>
+    <div style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;font-size:0.85em;font-weight:700;color:var(--text2);margin-bottom:6px">
+        <span>Plan Completion</span><span>${pct}%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-val">${meals}</div><div class="stat-label">Meals Done</div></div>
+      <div class="stat-box"><div class="stat-val">${exs}</div><div class="stat-label">Workouts</div></div>
+      <div class="stat-box"><div class="stat-val">${userData.xp || 0}</div><div class="stat-label">⭐ XP</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="font-weight:800;margin-bottom:10px">⚖️ Weight Goal</h3>
+    <p style="font-size:0.88em;color:var(--text2)">Starting: <strong style="color:var(--text)">${startW} kg</strong></p>
+    <p style="font-size:0.88em;color:var(--text2);margin-top:4px">Target: <strong style="color:var(--accent1)">${targetW} kg</strong></p>
+    <p style="font-size:0.82em;color:var(--text2);margin-top:10px;line-height:1.5">Update your weight regularly to track real progress. Small, consistent changes are the key to lasting health. 💪</p>
+  </div>`;
+
+  document.getElementById('progressContent').innerHTML = html;
+}
+
+/* ══════════════════════════════════════
+   INTERACTIONS
+══════════════════════════════════════ */
+function completeItem(type, name, isSafe, btn) {
+  const saved = localStorage.getItem('fitlife_user');
+  if (!saved) return;
+  const userData = JSON.parse(saved);
+
+  userData.completedItems = userData.completedItems || [];
+  const today = getTodayDateStr();
+  if (userData.completedItems.some(i => i.name === name && i.type === type && i.date === today)) return;
+
+  userData.completedItems.push({ name, type, safe: isSafe, time: Date.now(), date: getTodayDateStr() });
+  userData.xp = (userData.xp || 0) + 10;
+
+  // Badge unlock checks
+  const meals = userData.completedItems.filter(i => i.type === 'diet').length;
+  const exs = userData.completedItems.filter(i => i.type === 'exercise').length;
+
+  if (type === 'diet' && meals === 1) unlockBadge(userData, 'meal_hero', '🥘 Meal Hero!', 'First meal completed!');
+  if (type === 'exercise' && exs === 1) unlockBadge(userData, 'exercise_star', '⭐ Exercise Star!', 'First workout done!');
+  if (meals >= 3) unlockBadge(userData, 'meal_warrior', '🏅 Meal Warrior!', 'Completed 3 meals challenge!');
+  if (exs >= 3) unlockBadge(userData, 'exercise_hero', '🏃 Exercise Hero!', 'Completed 3 exercise challenge!');
+
+  const safeMeals = userData.completedItems.filter(i => i.type === 'diet' && i.safe).length;
+  if (safeMeals >= 5) unlockBadge(userData, 'allergy_safe', '🛡️ Allergy Guardian!', 'Kept yourself safe!');
+
+  if ((userData.unlockedBadges || []).length >= 5) unlockBadge(userData, 'champion', '👑 FitLife Champion!', 'Unlocked 5 badges!');
+
+  // Check exercise-specific badges
+  if (type === 'exercise') {
+    const age = parseInt(userData.age) || 25;
+    if (age < 18 && exs === 1) unlockBadge(userData, 'rising_star', '🌠 Rising Star!', 'First kids workout done!');
+    const gentleCount = userData.completedItems.filter(i => i.type === 'exercise' && (i.name.toLowerCase().includes('yoga') || i.name.toLowerCase().includes('walk') || i.name.toLowerCase().includes('stretch'))).length;
+    if (gentleCount >= 3) unlockBadge(userData, 'wellness', '🌿 Gentle Wellness!', 'Completed gentle exercises!');
+  }
+
+  localStorage.setItem('fitlife_user', JSON.stringify(userData));
+  btn.textContent = type === 'diet' ? '🎉 Completed!' : '🎉 Done!';
+  btn.classList.add('done');
+  renderDashboard(userData);
+
+  setTimeout(() => showCelebration('🎉', 'Activity Done!', '+10 XP earned! Keep going!'), 300);
+}
+
+function logWater() {
+  const saved = localStorage.getItem('fitlife_user');
+  if (!saved) return;
+  const userData = JSON.parse(saved);
+  userData.challengeProgress = userData.challengeProgress || {};
+  userData.challengeProgress['ch_water'] = (userData.challengeProgress['ch_water'] || 0) + 1;
+  userData.xp = (userData.xp || 0) + 5;
+
+  const p = userData.challengeProgress['ch_water'];
+  if (p >= 5) {
+    unlockBadge(userData, 'hydration_ranger', '💧 Hydration Ranger!', 'Stay hydrated every day!');
+  }
+
+  localStorage.setItem('fitlife_user', JSON.stringify(userData));
+  renderDashboard(userData);
+  showCelebration('💧', 'Water Logged!', '+5 XP · ' + p + '/5 toward Hydration Hero');
+}
+
+function unlockBadge(userData, id, title, sub) {
+  userData.unlockedBadges = userData.unlockedBadges || [];
+  if (!userData.unlockedBadges.includes(id)) {
+    userData.unlockedBadges.push(id);
+    userData.xp = (userData.xp || 0) + 20;
+    const b = BADGES_DEF.find(b => b.id === id);
+    setTimeout(() => showCelebration(b ? b.icon : '🏆', title, sub + ' +20 XP'), 600);
+  }
+}
+
+function showCelebration(emoji, title, sub) {
+  document.getElementById('celebEmoji').textContent = emoji;
+  document.getElementById('celebTitle').textContent = title;
+  document.getElementById('celebSub').textContent = sub;
+  document.getElementById('celebOverlay').classList.add('active');
+}
+
+function closeCelebration() {
+  document.getElementById('celebOverlay').classList.remove('active');
+}
+
+function toggleDetails(btn) {
+  const box = btn.nextElementSibling;
+  if (!box) return;
+  const opening = box.classList.contains('collapsed');
+  box.classList.toggle('collapsed');
+  btn.classList.toggle('open', opening);
+  const base = btn.dataset.baseText || btn.firstChild.textContent.trim().replace(' ','').slice(0,10);
+  btn.firstChild.textContent = opening ? '📖 Hide ' : '📖 Show ';
+}
+
+function switchTab(name, event) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  if (event && event.target) event.target.classList.add('active');
+  document.getElementById(name + 'Tab').classList.add('active');
+}
+
+function logout() {
+  const saved = localStorage.getItem('fitlife_user');
+  const name = saved ? JSON.parse(saved).name : '';
+  document.getElementById('logoutUserName').textContent = name ? 'Goodbye, ' + name + '! 👋' : '';
+  document.getElementById('logoutOverlay').classList.add('active');
+}
+
+function cancelLogout() {
+  document.getElementById('logoutOverlay').classList.remove('active');
+}
+
+function confirmLogout() {
+  document.getElementById('logoutOverlay').classList.remove('active');
+  localStorage.removeItem('fitlife_user');
+  localStorage.removeItem('fitlife_name');
+  // Reset JS state
+  selectedGoal = '';
+  selectedDiet = '';
+  selectedPeriod = '';
+  // Reset form fields
+  document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  document.getElementById('userName').value = '';
+  document.getElementById('userAge').value = '10';
+  document.getElementById('userHeight').value = '140';
+  document.getElementById('userWeight').value = '40';
+  goTo('regScreen');
+}
+
+/* ══════════════════════════════════════
+   IMAGE HELPERS — real photos via foodish API + exercise CDN
+══════════════════════════════════════ */
+
+/* Each food name maps to a stable seed number for picsum.photos
+   AND a descriptive query for the img alt. Seeds are fixed so the
+   same food always gets the same photo. */
+const FOOD_SEEDS = {
+  // Breakfast / oats
+  'oats':10,'porridge':10,'dalia':10,
+  // Eggs
+  'egg':20,'omelette':21,'scrambled':22,'poached':23,'bhurji':24,
+  // Salads / greens
+  'salad':30,'sprout':31,'cucumber':32,'green':33,
+  // Soups
+  'soup':40,'broth':41,'stew':42,
+  // Indian breads
+  'paratha':50,'roti':51,'chapati':51,'naan':52,'bread':53,'toast':54,
+  // Rice dishes
+  'rice':60,'biryani':61,'pulao':62,'fried rice':63,'khichdi':64,
+  // Dal / lentils
+  'dal':70,'lentil':71,'rajma':72,'chana':73,'chickpea':74,'moong':75,
+  // Paneer
+  'paneer':80,'cottage cheese':81,
+  // Chicken
+  'chicken':90,'turkey':91,'grilled chicken':92,
+  // Fish / seafood
+  'fish':100,'tuna':101,'salmon':102,'prawn':103,'shrimp':104,'crab':105,'seafood':106,'sardine':107,'mackerel':108,
+  // Mutton / lamb
+  'mutton':110,'lamb':111,
+  // Fruits
+  'fruit':120,'apple':121,'banana':122,'mango':123,'watermelon':124,'papaya':125,'guava':126,'orange':127,'pear':128,
+  // Nuts / snacks
+  'nuts':130,'almond':131,'peanut':132,'cashew':133,'walnut':134,
+  // Smoothies / shakes
+  'shake':140,'smoothie':141,'lassi':142,'milkshake':143,
+  // Curd / yogurt
+  'curd':150,'yogurt':151,'raita':152,
+  // South Indian
+  'idli':160,'dosa':161,'upma':162,'poha':163,'uttapam':164,'pongal':165,'pesarattu':166,'adai':167,'sambar':168,'chutney':169,
+  // Wraps / sandwiches
+  'sandwich':170,'wrap':171,'roll':172,
+  // Tofu / soy
+  'tofu':180,'soya':181,'edamame':182,
+  // Vegetables
+  'vegetable':190,'veggie':191,'spinach':192,'palak':193,'mushroom':194,'tomato':195,'carrot':196,'corn':197,'beet':198,
+  // Grains / millets
+  'millet':200,'quinoa':201,'oat':202,'ragi':203,'bajra':204,'jowar':205,'foxtail':206,
+  // Thali / balanced
+  'thali':210,'balanced':211,
+  // Avocado
+  'avocado':220,
+  // Default
+  'default':999
+};
+
+const EXERCISE_SEEDS = {
+  'brisk walking':300,'walking':301,
+  'cycling':310,'easy cycling':311,
+  'hiit':320,'bodyweight hiit':321,
+  'stretching':330,'stretch':331,
+  'jump rope':340,
+  'mountain climbers':350,
+  'push-up':360,'push up':361,
+  'squat':370,
+  'weight training':380,'weights':381,'shoulder press':382,'dumbbell':383,
+  'core':390,'plank':391,'plank hold':392,
+  'lunge':400,
+  'yoga':410,
+  'light strength':420,'strength training':421,
+  'mobility':430,'mobility work':431,
+  'swimming':440,
+  'default':499
+};
+
+/* Fixed, visually-verified Picsum photo seeds that show relevant content */
+const FOOD_PICSUM = {
+  10:'https://images.pexels.com/photos/704569/pexels-photo-704569.jpeg',   // oatmeal
+  20:'https://images.pexels.com/photos/824635/pexels-photo-824635.jpeg',   // eggs
+  21:'https://images.pexels.com/photos/6107532/pexels-photo-6107532.jpeg', // omelette
+  22:'https://images.pexels.com/photos/139746/pexels-photo-139746.jpeg',   // scrambled eggs
+  23:'https://images.pexels.com/photos/566566/pexels-photo-566566.jpeg',   // poached egg
+  24:'https://images.pexels.com/photos/4518843/pexels-photo-4518843.jpeg', // egg bhurji
+  30:'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg', // salad
+  31:'https://images.pexels.com/photos/1143754/pexels-photo-1143754.jpeg', // sprout salad
+  32:'https://images.pexels.com/photos/1099680/pexels-photo-1099680.jpeg', // cucumber salad
+  33:'https://images.pexels.com/photos/257816/pexels-photo-257816.jpeg',   // green salad
+  40:'https://images.pexels.com/photos/539451/pexels-photo-539451.jpeg',   // soup
+  41:'https://images.pexels.com/photos/1703272/pexels-photo-1703272.jpeg', // broth
+  42:'https://images.pexels.com/photos/2689419/pexels-photo-2689419.jpeg', // stew
+  50:'https://images.pexels.com/photos/9986228/pexels-photo-9986228.jpeg', // paratha
+  51:'https://images.pexels.com/photos/1117056/pexels-photo-1117056.jpeg', // roti chapati
+  52:'https://images.pexels.com/photos/1246960/pexels-photo-1246960.jpeg', // naan
+  53:'https://images.pexels.com/photos/209206/pexels-photo-209206.jpeg',   // bread
+  54:'https://images.pexels.com/photos/3724353/pexels-photo-3724353.jpeg', // toast
+  60:'https://images.pexels.com/photos/723198/pexels-photo-723198.jpeg',   // rice bowl
+  61:'https://images.pexels.com/photos/12737628/pexels-photo-12737628.jpeg',// biryani
+  62:'https://images.pexels.com/photos/4393021/pexels-photo-4393021.jpeg', // pulao
+  63:'https://images.pexels.com/photos/2456435/pexels-photo-2456435.jpeg', // fried rice
+  64:'https://images.pexels.com/photos/6260921/pexels-photo-6260921.jpeg', // khichdi
+  70:'https://images.pexels.com/photos/4393426/pexels-photo-4393426.jpeg', // dal
+  71:'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg', // lentil soup
+  72:'https://images.pexels.com/photos/5560764/pexels-photo-5560764.jpeg', // rajma
+  73:'https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg', // chana masala
+  74:'https://images.pexels.com/photos/1618898/pexels-photo-1618898.jpeg', // chickpea
+  75:'https://images.pexels.com/photos/8108058/pexels-photo-8108058.jpeg', // moong dal
+  80:'https://images.pexels.com/photos/7625056/pexels-photo-7625056.jpeg', // paneer
+  81:'https://images.pexels.com/photos/4109111/pexels-photo-4109111.jpeg', // cottage cheese
+  90:'https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg', // chicken
+  91:'https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg', // turkey
+  92:'https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg', // grilled chicken
+  100:'https://images.pexels.com/photos/3655916/pexels-photo-3655916.jpeg',// fish
+  101:'https://images.pexels.com/photos/4553031/pexels-photo-4553031.jpeg',// tuna
+  102:'https://images.pexels.com/photos/3763847/pexels-photo-3763847.jpeg',// salmon
+  103:'https://images.pexels.com/photos/566345/pexels-photo-566345.jpeg',  // prawn
+  104:'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg',// shrimp
+  105:'https://images.pexels.com/photos/3682446/pexels-photo-3682446.jpeg',// crab
+  106:'https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg',  // seafood
+  107:'https://images.pexels.com/photos/4553031/pexels-photo-4553031.jpeg',// sardine
+  108:'https://images.pexels.com/photos/3655916/pexels-photo-3655916.jpeg',// mackerel
+  110:'https://images.pexels.com/photos/3763847/pexels-photo-3763847.jpeg',// mutton curry
+  111:'https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg',// lamb
+  120:'https://images.pexels.com/photos/1132047/pexels-photo-1132047.jpeg',// fruits
+  121:'https://images.pexels.com/photos/102104/pexels-photo-102104.jpeg',  // apple
+  122:'https://images.pexels.com/photos/2116045/pexels-photo-2116045.jpeg',// banana
+  123:'https://images.pexels.com/photos/918643/pexels-photo-918643.jpeg',  // mango
+  124:'https://images.pexels.com/photos/1313267/pexels-photo-1313267.jpeg',// watermelon
+  125:'https://images.pexels.com/photos/4117723/pexels-photo-4117723.jpeg',// papaya
+  126:'https://images.pexels.com/photos/4846164/pexels-photo-4846164.jpeg',// guava
+  127:'https://images.pexels.com/photos/161559/background-bitter-breakfast-bright-161559.jpeg',// orange
+  128:'https://images.pexels.com/photos/568471/pexels-photo-568471.jpeg',  // pear
+  130:'https://images.pexels.com/photos/1295572/pexels-photo-1295572.jpeg',// nuts
+  131:'https://images.pexels.com/photos/3735172/pexels-photo-3735172.jpeg',// almonds
+  132:'https://images.pexels.com/photos/136537/pexels-photo-136537.jpeg',  // peanuts
+  133:'https://images.pexels.com/photos/4198022/pexels-photo-4198022.jpeg',// cashew
+  134:'https://images.pexels.com/photos/4198022/pexels-photo-4198022.jpeg',// walnut
+  140:'https://images.pexels.com/photos/1346347/pexels-photo-1346347.jpeg',// shake
+  141:'https://images.pexels.com/photos/775030/pexels-photo-775030.jpeg',  // smoothie
+  142:'https://images.pexels.com/photos/3026804/pexels-photo-3026804.jpeg',// lassi
+  143:'https://images.pexels.com/photos/3625372/pexels-photo-3625372.jpeg',// milkshake
+  150:'https://images.pexels.com/photos/1435706/pexels-photo-1435706.jpeg',// curd yogurt
+  151:'https://images.pexels.com/photos/373882/pexels-photo-373882.jpeg',  // yogurt
+  152:'https://images.pexels.com/photos/3026804/pexels-photo-3026804.jpeg',// raita
+  160:'https://images.pexels.com/photos/4449068/pexels-photo-4449068.jpeg',// idli
+  161:'https://images.pexels.com/photos/5560765/pexels-photo-5560765.jpeg',// dosa
+  162:'https://images.pexels.com/photos/7625066/pexels-photo-7625066.jpeg',// upma
+  163:'https://images.pexels.com/photos/9986229/pexels-photo-9986229.jpeg',// poha
+  164:'https://images.pexels.com/photos/4449068/pexels-photo-4449068.jpeg',// uttapam
+  165:'https://images.pexels.com/photos/6260921/pexels-photo-6260921.jpeg',// pongal
+  166:'https://images.pexels.com/photos/4449068/pexels-photo-4449068.jpeg',// pesarattu
+  167:'https://images.pexels.com/photos/5560765/pexels-photo-5560765.jpeg',// adai
+  168:'https://images.pexels.com/photos/4393426/pexels-photo-4393426.jpeg',// sambar
+  169:'https://images.pexels.com/photos/4198022/pexels-photo-4198022.jpeg',// chutney
+  170:'https://images.pexels.com/photos/1647163/pexels-photo-1647163.jpeg',// sandwich
+  171:'https://images.pexels.com/photos/2955819/pexels-photo-2955819.jpeg',// wrap
+  172:'https://images.pexels.com/photos/2955819/pexels-photo-2955819.jpeg',// roll
+  180:'https://images.pexels.com/photos/793785/pexels-photo-793785.jpeg',  // tofu
+  181:'https://images.pexels.com/photos/793785/pexels-photo-793785.jpeg',  // soya
+  182:'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg',// edamame
+  190:'https://images.pexels.com/photos/1640773/pexels-photo-1640773.jpeg',// vegetables
+  191:'https://images.pexels.com/photos/1458694/pexels-photo-1458694.jpeg',// veggies
+  192:'https://images.pexels.com/photos/2325843/pexels-photo-2325843.jpeg',// spinach
+  193:'https://images.pexels.com/photos/2325843/pexels-photo-2325843.jpeg',// palak
+  194:'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg',// mushroom
+  195:'https://images.pexels.com/photos/533280/pexels-photo-533280.jpeg',  // tomato
+  196:'https://images.pexels.com/photos/1435735/pexels-photo-1435735.jpeg',// carrot
+  197:'https://images.pexels.com/photos/1459339/pexels-photo-1459339.jpeg',// corn
+  198:'https://images.pexels.com/photos/3671064/pexels-photo-3671064.jpeg',// beet
+  200:'https://images.pexels.com/photos/4393021/pexels-photo-4393021.jpeg',// millet
+  201:'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg',// quinoa
+  202:'https://images.pexels.com/photos/704569/pexels-photo-704569.jpeg',  // oat
+  203:'https://images.pexels.com/photos/4393021/pexels-photo-4393021.jpeg',// ragi
+  204:'https://images.pexels.com/photos/4393021/pexels-photo-4393021.jpeg',// bajra
+  205:'https://images.pexels.com/photos/4393021/pexels-photo-4393021.jpeg',// jowar
+  206:'https://images.pexels.com/photos/4393021/pexels-photo-4393021.jpeg',// foxtail
+  210:'https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg',  // thali
+  211:'https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg',// balanced meal
+  220:'https://images.pexels.com/photos/1656663/pexels-photo-1656663.jpeg',// avocado
+  999:'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg' // default food
+};
+
+const EXERCISE_PEXELS = {
+  300:'https://images.pexels.com/photos/1571939/pexels-photo-1571939.jpeg', // brisk walking
+  301:'https://images.pexels.com/photos/235922/pexels-photo-235922.jpeg',   // walking
+  310:'https://images.pexels.com/photos/26176/pexels-photo-26176.jpeg',     // cycling
+  311:'https://images.pexels.com/photos/100582/pexels-photo-100582.jpeg',   // easy cycling
+  320:'https://images.pexels.com/photos/841130/pexels-photo-841130.jpeg',   // hiit
+  321:'https://images.pexels.com/photos/999309/pexels-photo-999309.jpeg',   // bodyweight
+  330:'https://images.pexels.com/photos/3822621/pexels-photo-3822621.jpeg', // stretching
+  331:'https://images.pexels.com/photos/317157/pexels-photo-317157.jpeg',   // stretch
+  340:'https://images.pexels.com/photos/4753987/pexels-photo-4753987.jpeg', // jump rope
+  350:'https://images.pexels.com/photos/841130/pexels-photo-841130.jpeg',   // mountain climbers
+  360:'https://images.pexels.com/photos/4162487/pexels-photo-4162487.jpeg', // push-ups
+  361:'https://images.pexels.com/photos/4162487/pexels-photo-4162487.jpeg', // push-ups
+  370:'https://images.pexels.com/photos/4164761/pexels-photo-4164761.jpeg', // squats
+  380:'https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg', // weight training
+  381:'https://images.pexels.com/photos/414029/pexels-photo-414029.jpeg',   // weights
+  382:'https://images.pexels.com/photos/1547248/pexels-photo-1547248.jpeg', // shoulder press
+  383:'https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg', // dumbbell
+  390:'https://images.pexels.com/photos/4056723/pexels-photo-4056723.jpeg', // core workout
+  391:'https://images.pexels.com/photos/2294361/pexels-photo-2294361.jpeg', // plank
+  392:'https://images.pexels.com/photos/2294361/pexels-photo-2294361.jpeg', // plank hold
+  400:'https://images.pexels.com/photos/4164511/pexels-photo-4164511.jpeg', // lunges
+  410:'https://images.pexels.com/photos/4056535/pexels-photo-4056535.jpeg', // yoga
+  420:'https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg', // light strength
+  421:'https://images.pexels.com/photos/1552249/pexels-photo-1552249.jpeg', // strength training
+  430:'https://images.pexels.com/photos/3822621/pexels-photo-3822621.jpeg', // mobility
+  431:'https://images.pexels.com/photos/317157/pexels-photo-317157.jpeg',   // mobility work
+  440:'https://images.pexels.com/photos/2128816/pexels-photo-2128816.jpeg', // swimming
+  499:'https://images.pexels.com/photos/703012/pexels-photo-703012.jpeg'    // gym default
+};
+
+function getFoodPhotoUrl(name) {
+  const lower = name.toLowerCase();
+  // Try longest matching keyword first
+  let bestKey = null, bestLen = 0;
+  for (const key of Object.keys(FOOD_SEEDS)) {
+    if (key !== 'default' && lower.includes(key) && key.length > bestLen) {
+      bestKey = key; bestLen = key.length;
+    }
+  }
+  const seed = bestKey ? FOOD_SEEDS[bestKey] : FOOD_SEEDS['default'];
+  const url = FOOD_PICSUM[seed] || FOOD_PICSUM[999];
+  return url + '?auto=compress&cs=tinysrgb&w=640&h=420&fit=crop';
+}
+
+function getExercisePhotoUrl(name) {
+  const lower = name.toLowerCase();
+  let bestKey = null, bestLen = 0;
+  for (const key of Object.keys(EXERCISE_SEEDS)) {
+    if (key !== 'default' && lower.includes(key) && key.length > bestLen) {
+      bestKey = key; bestLen = key.length;
+    }
+  }
+  const seed = bestKey ? EXERCISE_SEEDS[bestKey] : EXERCISE_SEEDS['default'];
+  const url = EXERCISE_PEXELS[seed] || EXERCISE_PEXELS[499];
+  return url + '?auto=compress&cs=tinysrgb&w=640&h=420&fit=crop';
+}
+
+function makeFoodFallback(name, idx) {
+  const colors = [['#ff6b6b','#ffd166'],['#06d6a0','#118ab2'],['#fb5607','#ffbe0b'],['#8338ec','#3a86ff']];
+  const c = colors[idx % colors.length];
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 210"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${c[0]}"/><stop offset="1" stop-color="${c[1]}"/></linearGradient></defs><rect width="320" height="210" fill="url(#g)"/><text x="160" y="100" text-anchor="middle" font-size="60" dominant-baseline="middle">🍽️</text><text x="160" y="160" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="white">${name.slice(0,20)}</text></svg>`;
+  return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+}
+
+function makeExerciseFallback(name, idx) {
+  const colors = [['#667eea','#764ba2'],['#11998e','#38ef7d'],['#fc466b','#3f5efb'],['#f7971e','#ffd200']];
+  const c = colors[idx % colors.length];
+  const icons = ['🏃','🚴','🧘','💪','🤸','🏋️'];
+  const icon = icons[idx % icons.length];
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 210"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${c[0]}"/><stop offset="1" stop-color="${c[1]}"/></linearGradient></defs><rect width="320" height="210" fill="url(#g)"/><text x="160" y="100" text-anchor="middle" font-size="60" dominant-baseline="middle">${icon}</text><text x="160" y="160" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="white">${name.slice(0,20)}</text></svg>`;
+  return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+}
+
+/* ══════════════════════════════════════
+   CONTENT HELPERS
+══════════════════════════════════════ */
+function goalLabel(g) {
+  return g === 'lose' ? 'Lose Weight' : g === 'gain' ? 'Gain Strength' : 'Stay Healthy';
+}
+
+const MEAL_SLOTS = ['🌅 Breakfast', '☀️ Lunch', '🌤️ Snack', '🌙 Dinner', '🌅 Breakfast', '☀️ Lunch'];
+
+function getDietTime(name, index) {
+  return MEAL_SLOTS[index % MEAL_SLOTS.length];
+}
+
+function getDietRecipeHTML(name) {
+  const recipes = {
+    'Oats with fruit': [['Oats','Milk or water','Banana or apple','Few nuts'],['Boil oats with milk or water.','Add chopped fruit on top.','Mix gently and serve warm.']],
+    'Sprout salad': [['Sprouts','Cucumber','Tomato','Lemon juice'],['Wash sprouts and vegetables.','Mix everything in a bowl.','Add lemon and a little salt.']],
+    'Vegetable soup': [['Carrot','Beans','Corn','Water or stock'],['Chop vegetables into small pieces.','Boil until soft.','Add mild seasoning and serve warm.']],
+    'Paneer and salad bowl': [['Paneer cubes','Carrot','Cucumber','Corn'],['Lightly toast paneer cubes.','Add chopped salad vegetables.','Mix and serve.']],
+    'Millet khichdi with curd': [['Millet','Moong dal','Vegetables','Curd'],['Wash millet and dal.','Cook with vegetables until soft.','Serve with curd on the side.']],
+    'Fruit and nuts snack': [['Seasonal fruits','Almonds or peanuts','Raisins'],['Wash and chop fruits.','Add a small handful of nuts.','Mix and eat fresh.']],
+    'Boiled eggs': [['Eggs','Water','Fruit side'],['Boil eggs for 8-10 minutes.','Cool, peel, and slice.','Eat with fruit or toast.']],
+    'Grilled chicken salad': [['Chicken pieces','Lettuce or cucumber','Tomato','Lemon'],['Cook chicken until done.','Chop vegetables.','Mix chicken and vegetables with lemon.']],
+    'Fish with vegetables': [['Fish','Carrot','Beans','Rice or roti'],['Steam or grill fish.','Cook vegetables lightly.','Serve together.']],
+    'Clear soup': [['Vegetables','Water','Pepper','Little salt'],['Boil vegetables in water.','Simmer until flavors mix.','Serve warm.']],
+    'Balanced thali': [['Rice or roti','Dal','Vegetable curry','Curd'],['Place rice/roti on plate.','Add dal and vegetables.','Add curd for balance.']],
+    'Curd rice': [['Rice','Curd','Cucumber','Carrot'],['Cool cooked rice.','Mix with curd.','Add grated vegetables.']],
+    'Seasonal fruit bowl': [['2-3 fruits','Curd optional','Nuts optional'],['Wash fruits.','Chop into bite-size pieces.','Mix and serve fresh.']],
+    'Chickpea salad bowl': [['Boiled chickpeas','Tomato','Cucumber','Lemon'],['Boil chickpeas until soft.','Add chopped vegetables.','Mix with lemon.']],
+    'Dal with chapati': [['Dal','Chapati','Salad'],['Cook dal until soft.','Prepare chapati.','Serve with salad.']],
+  };
+  const r = recipes[name] || [['Main food item','Vegetables','Water'],['Wash ingredients.','Cook safely.','Serve fresh.']];
+  return `<h4>Ingredients</h4><ul>${r[0].map(i=>'<li>'+i+'</li>').join('')}</ul><h4>Steps</h4><ol>${r[1].map(s=>'<li>'+s+'</li>').join('')}</ol>`;
+}
+
+function getExerciseHTML(name) {
+  const steps = {
+    'Brisk walking': ['Stand tall and look forward.','Walk faster than normal but do not run.','Swing arms gently.','Slow down if breathing feels hard.'],
+    'Cycling': ['Wear shoes and safety gear.','Start slowly for 3 minutes.','Pedal at a steady speed.','Cool down with slow pedaling.'],
+    'Bodyweight HIIT': ['Warm up with marching in place.','Do jumping jacks for 20 seconds.','Rest for 20 seconds.','Repeat with squats or high knees.'],
+    'Stretching': ['Stand or sit comfortably.','Stretch one body part slowly.','Hold without bouncing.','Breathe and change sides.'],
+    'Jump rope': ['Hold rope handles at your sides.','Jump low and softly.','Keep elbows near the body.','Stop if knees or ankles hurt.'],
+    'Push-ups': ['Place hands under shoulders.','Keep body straight or knees down.','Lower chest slowly.','Push back up with control.'],
+    'Squats': ['Stand with feet shoulder-width apart.','Push hips back like sitting.','Keep knees pointing forward.','Stand up tall again.'],
+    'Walking': ['Start slowly.','Walk with relaxed shoulders.','Keep a steady pace.','Finish with slow steps.'],
+    'Yoga': ['Sit or stand calmly.','Move into one pose slowly.','Breathe in and out.','Come out gently.'],
+    'Plank hold': ['Place elbows under shoulders.','Keep body straight.','Hold while breathing.','Rest before repeating.'],
+    'Easy cycling': ['Start slowly.','Pedal comfortably.','Keep control of speed.','Cool down gently.'],
+  };
+  const s = steps[name] || ['Warm up first.','Do the movement slowly.','Keep breathing.','Stop if there is pain.'];
+  return `<h4>How to do it</h4><ol>${s.map(x=>'<li>'+x+'</li>').join('')}</ol><h4>Safety</h4><ul><li>Drink water before and after.</li><li>Stop if you feel pain or dizzy.</li></ul>`;
+}
+
+/* ══════════════════════════════════════
+   INIT
+══════════════════════════════════════ */
+window.addEventListener('load', function() {
+  const saved = localStorage.getItem('fitlife_user');
+  if (saved) {
+    let userData = JSON.parse(saved);
+    const prevDate = userData.lastPlanDate;
+    userData = refreshPlanIfNewDay(userData);
+    if (prevDate && prevDate !== userData.lastPlanDate) {
+      // Show new day banner after render
+      setTimeout(() => showCelebration('🌅', 'New Day, New Plan!', 'Your food plan has refreshed for today!'), 600);
+    }
+    renderDashboard(userData);
+    goTo('dashScreen');
+  }
+});
+</script>
+</body>
+</html>

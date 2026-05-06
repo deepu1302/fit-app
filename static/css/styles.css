@@ -1,0 +1,205 @@
+/* Custom styles for FitLife Tracker - Inline equivalent */
+ html, body { height: 100%; margin: 0;font-family: 'Nunito', sans-serif; }
+body { overflow: hidden; }
+.app-root { height: 100%; width: 100%; overflow-y: auto; overflow-x: hidden; background-attachment: fixed; }
+
+/* Animated gradient background with overlay patterns */
+.bg-animated {
+  background: 
+    radial-gradient(circle at 15% 25%, rgba(168, 85, 247, 0.2) 0%, transparent 50%),
+    radial-gradient(circle at 85% 75%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 60%),
+    linear-gradient(135deg, #1a0f2e 0%, #2d1b4e 25%, #3d2566 50%, #2f1f4a 75%, #1a0f2e 100%);
+  background-size: 400% 400%, 500% 500%, 600% 600%, 100% 100%;
+  animation: gradientShift 15s ease infinite, pulseRadial 20s ease-in-out infinite;
+  position: relative;
+}
+@keyframes gradientShift  {
+  0% { background-position: 0% 50%, 0% 50%, 0% 50%, 0% 50%; }
+  50% { background-position: 100% 50%, 100% 50%, 100% 50%, 100% 50%; }
+  100% { background-position: 0% 50%, 0% 50%, 0% 50%, 0% 50%; }
+}
+@keyframes pulseRadial {
+  0%, 100% { background-size: 400% 400%, 500% 500%, 600% 600%, 100% 100%; }
+  50% { background-size: 420% 420%, 520% 520%, 620% 620%, 100% 100%; }
+}
+
+.bg-animated::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: 
+    repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 255, 255, 0.02) 10px, rgba(255, 255, 255, 0.02) 20px),
+    repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(255, 255, 255, 0.015) 10px, rgba(255, 255, 255, 0.015) 20px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Card glassmorphism */
+.card-glass {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+.card-glass-light {
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+/* Buttons */
+.btn-primary {
+  background: linear-gradient(135deg, #ec4899, #a855f7);
+  color: #ffffff;
+  font-weight: 700;
+  transition: all 0.3s;
+}
+.btn-primary:hover { 
+  transform: translateY(-2px); 
+  box-shadow: 0 8px 25px rgba(168,85,247,0.4); 
+}
+.btn-primary:disabled { 
+  opacity: 0.5; transform: none; box-shadow: none; 
+}
+
+.btn-secondary {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #ec4899;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+.btn-secondary:hover { 
+  background: rgba(255,255,255,0.18); 
+}
+
+/* Inputs */
+.input-field {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #f3e8ff;
+  transition: all 0.3s;
+}
+.input-field:focus { 
+  border-color: #a855f7; 
+  outline: none; 
+  box-shadow: 0 0 0 3px rgba(168,85,247,0.25); 
+}
+.input-field::placeholder { 
+  color: rgba(236,72,153,0.4); 
+}
+
+/* Tags */
+.tag-btn {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #ec4899;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 9999px;
+}
+.tag-btn:hover { background: rgba(255,255,255,0.12); }
+.tag-btn.active { 
+  background: rgba(168,85,247,0.4); 
+  border-color: #a855f7; 
+  color: #fff; 
+}
+
+/* Cards */
+.diet-card, .goal-card {
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 2px solid transparent;
+}
+.diet-card:hover, .goal-card:hover { transform: translateY(-3px); }
+.diet-card.selected, .goal-card.selected { 
+  border-color: #a855f7; 
+  background: rgba(168,85,247,0.2); 
+}
+
+.badge-item {
+  animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+@keyframes popIn {
+  0% { transform: scale(0); } 
+  100% { transform: scale(1); } 
+}
+
+/* Period buttons */
+.period-btn {
+  cursor: pointer; 
+  transition: all 0.2s;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.06);
+  color: #bbe1fa;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+.period-btn:hover { background: rgba(255,255,255,0.12); }
+.period-btn.active { 
+  background: rgba(50,130,184,0.4); 
+  border-color: #3282b8; 
+  color: #fff; 
+}
+
+/* Language buttons */
+.lang-btn, .lang-select-btn {
+  cursor: pointer; 
+  transition: all 0.3s;
+  border: 2px solid transparent;
+}
+.lang-btn:hover, .lang-select-btn:hover { transform: translateY(-2px); border-color: rgba(50,130,184,0.5); }
+.lang-btn.selected, .lang-select-btn.selected { 
+  border-color: #3282b8; 
+  background: rgba(50,130,184,0.2); 
+}
+.lang-select-btn .check-icon { display: none; }
+.lang-select-btn.selected .check-icon { display: block; }
+
+/* Tabs */
+.tab-btn {
+  padding: 10px 20px; 
+  cursor: pointer; 
+  font-weight: 700;
+  color: rgba(187,225,250,0.5); 
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s;
+}
+.tab-btn:hover { color: #bbe1fa; }
+.tab-btn.active { color: #bbe1fa; border-bottom-color: #3282b8; }
+
+/* Animations */
+.fade-in { animation: fadeIn 0.5s ease; }
+@keyframes fadeIn { 
+  0% { opacity: 0; transform: translateY(15px); } 
+  100% { opacity: 1; transform: translateY(0); } 
+}
+
+.progress-ring { transition: stroke-dashoffset 1s ease; }
+
+/* Custom scrollbar */
+.app-root::-webkit-scrollbar { width: 6px; }
+.app-root::-webkit-scrollbar-track { background: transparent; }
+.app-root::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+
+select.input-field { 
+  appearance: none; 
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23bbe1fa' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); 
+  background-repeat: no-repeat; 
+  background-position: right 12px center; 
+}
+
+/* Toast */
+.toast-msg {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: rgba(50,130,184,0.95); color: #fff; padding: 12px 24px;
+  border-radius: 12px; font-weight: 700; z-index: 100;
+  animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
+}
+@keyframes toastIn { 0% { opacity:0; transform: translateX(-50%) translateY(20px); } 100% { opacity:1; transform: translateX(-50%) translateY(0); } }
+@keyframes toastOut { 0% { opacity:1; } 100% { opacity:0; } }
+
+.inline-confirm { animation: fadeIn 0.25s ease; }

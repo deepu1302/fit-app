@@ -1,0 +1,19 @@
+{
+  "name": "major-project",
+  "version": "1.0.0",
+  "description": "1. **MySQL** - Install MySQL Server\r    - Download from: https://dev.mysql.com/downloads/mysql/\r    - During installation, set a root password",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "npx tailwindcss -i ./input.css -o ./css/styles.css --minify",
+    "build:css:watch": "npx tailwindcss -i ./input.css -o ./css/styles.css --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^10.5.0",
+    "postcss": "^8.5.13",
+    "tailwindcss": "^3.4.19"
+  }
+}
